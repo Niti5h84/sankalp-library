@@ -20,7 +20,7 @@ export default function AdminRegister() {
     setError("");
 
     try {
-      await axios.post("http://localhost:5000/api/auth/register", formData);
+      await axios.post("https://sankalp-library.onrender.com/api/auth/register", formData);
       setSuccess(true);
       setTimeout(() => {
         router.push("/admin/login");

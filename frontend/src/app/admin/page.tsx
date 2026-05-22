@@ -12,7 +12,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/dashboard/stats");
+        const res = await axios.get("https://sankalp-library.onrender.com/api/dashboard/stats");
         setStatsData(res.data);
       } catch (err) {
         console.error("Failed to fetch stats", err);

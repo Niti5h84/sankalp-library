@@ -15,7 +15,7 @@ export default function SeatsPage() {
   const fetchSeats = async () => {
     try {
       setIsLoading(true);
-      const res = await axios.get("http://localhost:5000/api/seats");
+      const res = await axios.get("https://sankalp-library.onrender.com/api/seats");
       setSeats(res.data);
     } catch (err) {
       console.error(err);
@@ -32,7 +32,7 @@ export default function SeatsPage() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await axios.post("http://localhost:5000/api/seats", newSeat);
+      await axios.post("https://sankalp-library.onrender.com/api/seats", newSeat);
       await fetchSeats();
       setIsModalOpen(false);
       setNewSeat({ seatNumber: "", floorNumber: 1, seatType: "Normal" });
@@ -47,7 +47,7 @@ export default function SeatsPage() {
   const handleDeleteSeat = async (id: string) => {
     if (!confirm("Are you sure you want to delete this seat?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/seats/${id}`);
+      await axios.delete(`https://sankalp-library.onrender.com/api/seats/${id}`);
       await fetchSeats();
     } catch (err) {
       console.error(err);

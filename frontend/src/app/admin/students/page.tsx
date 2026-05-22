@@ -24,7 +24,7 @@ export default function StudentsPage() {
   const fetchStudents = async () => {
     try {
       setIsLoading(true);
-      const res = await axios.get("http://localhost:5000/api/students");
+      const res = await axios.get("https://sankalp-library.onrender.com/api/students");
       setStudents(res.data);
     } catch (err) {
       console.error("Failed to fetch students", err);
@@ -41,7 +41,7 @@ export default function StudentsPage() {
     e.preventDefault();
     try {
       setIsSubmitting(true);
-      await axios.post("http://localhost:5000/api/students", formData);
+      await axios.post("https://sankalp-library.onrender.com/api/students", formData);
       await fetchStudents();
       setIsModalOpen(false);
       setFormData({ studentId: "", fullName: "", phone: "", seat: "", shift: "Morning" });
@@ -56,7 +56,7 @@ export default function StudentsPage() {
   const handleDeleteStudent = async (id: string) => {
     if (!confirm("Are you sure you want to delete this student?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/students/${id}`);
+      await axios.delete(`https://sankalp-library.onrender.com/api/students/${id}`);
       await fetchStudents();
     } catch (err) {
       console.error(err);
@@ -70,7 +70,7 @@ export default function StudentsPage() {
     if (newPassword.length < 6) return alert("Password must be at least 6 characters.");
     
     try {
-      await axios.post(`http://localhost:5000/api/students/${id}/reset-password`, { newPassword });
+      await axios.post(`https://sankalp-library.onrender.com/api/students/${id}/reset-password`, { newPassword });
       alert("Password reset successfully!");
     } catch (err) {
       console.error(err);

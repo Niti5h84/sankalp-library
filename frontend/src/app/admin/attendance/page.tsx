@@ -13,7 +13,7 @@ export default function AttendancePage() {
 
   const fetchStudents = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/students");
+      const res = await axios.get("https://sankalp-library.onrender.com/api/students");
       setStudents(res.data);
     } catch (err) {
       console.error(err);
@@ -24,7 +24,7 @@ export default function AttendancePage() {
     try {
       const month = currentDate.getMonth() + 1;
       const year = currentDate.getFullYear();
-      const res = await axios.get(`http://localhost:5000/api/attendance?month=${month}&year=${year}`);
+      const res = await axios.get(`https://sankalp-library.onrender.com/api/attendance?month=${month}&year=${year}`);
       setAttendance(res.data);
     } catch (err) {
       console.error(err);
@@ -51,7 +51,7 @@ export default function AttendancePage() {
   const markAttendance = async (studentId: string, day: number, status: string) => {
     const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
     try {
-      await axios.post("http://localhost:5000/api/attendance", {
+      await axios.post("https://sankalp-library.onrender.com/api/attendance", {
         studentId,
         date: targetDate.toISOString(),
         status

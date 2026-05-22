@@ -31,7 +31,7 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true); setError("");
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", { email, password });
+      const res = await axios.post("https://sankalp-library.onrender.com/api/auth/login", { email, password });
       localStorage.setItem("adminToken", res.data.token);
       localStorage.setItem("adminData", JSON.stringify(res.data.admin));
       router.push("/admin");
@@ -44,7 +44,7 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true); setError("");
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/student/login", { mobileNumber, password });
+      const res = await axios.post("https://sankalp-library.onrender.com/api/auth/student/login", { mobileNumber, password });
       localStorage.setItem("studentToken", res.data.token);
       localStorage.setItem("studentData", JSON.stringify(res.data.student));
       router.push("/student/dashboard"); // We will build this next
@@ -57,7 +57,7 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true); setForgotStatus("");
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/forgot-password", { email: forgotEmail });
+      const res = await axios.post("https://sankalp-library.onrender.com/api/auth/forgot-password", { email: forgotEmail });
       setForgotStatus(res.data.msg || "Recovery email sent!");
     } catch (err: any) {
       setForgotStatus(err.response?.data?.msg || "Failed to send email.");
@@ -68,7 +68,7 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true); setError("");
     try {
-      await axios.post("http://localhost:5000/api/auth/student/register", { fullName, mobileNumber, password });
+      await axios.post("https://sankalp-library.onrender.com/api/auth/student/register", { fullName, mobileNumber, password });
       alert("Registration successful! You can now log in.");
       setIsLoginView(true);
     } catch (err: any) {

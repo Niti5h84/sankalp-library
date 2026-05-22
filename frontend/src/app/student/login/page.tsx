@@ -20,7 +20,7 @@ export default function StudentLogin() {
     setError("");
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/student-login", { studentId, password });
+      const res = await axios.post("https://sankalp-library.onrender.com/api/auth/student-login", { studentId, password });
       
       // Store token
       localStorage.setItem("studentToken", res.data.token);

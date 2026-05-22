@@ -18,7 +18,7 @@ export default function FeesPage() {
   const fetchStudents = async () => {
     try {
       setIsLoading(true);
-      const res = await axios.get("http://localhost:5000/api/students");
+      const res = await axios.get("https://sankalp-library.onrender.com/api/students");
       setStudents(res.data);
     } catch (err) {
       console.error(err);
@@ -34,7 +34,7 @@ export default function FeesPage() {
   const handleRenew = async (id: string) => {
     if (!confirm("Confirm renewal for 30 days?")) return;
     try {
-      await axios.post(`http://localhost:5000/api/students/${id}/renew`);
+      await axios.post(`https://sankalp-library.onrender.com/api/students/${id}/renew`);
       await fetchStudents();
     } catch (err) {
       console.error(err);
