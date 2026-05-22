@@ -27,6 +27,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [profileOpen, setProfileOpen] = useState(false);
   const [adminUser, setAdminUser] = useState({ name: "Admin", email: "admin@sankalp.com", initial: "A" });
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   useEffect(() => {
     const data = localStorage.getItem("adminData");
     if (data) {
@@ -47,11 +49,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
+      {/* Mobile Overlay */}
+      {mobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-20 md:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <motion.aside 
         initial={false}
         animate={{ width: sidebarOpen ? "280px" : "80px" }}
-        className="bg-brand-blue text-white shrink-0 hidden md:flex flex-col relative transition-all duration-300 z-20 shadow-2xl"
+        className={`bg-brand-blue text-white shrink-0 flex-col transition-all duration-300 z-30 shadow-2xl ${mobileMenuOpen ? 'flex absolute inset-y-0 left-0' : 'hidden md:flex md:relative'}`}
       >
         <div className="h-20 flex items-center justify-center border-b border-white/10 px-4">
           <BookOpen className={`text-brand-gold shrink-0 ${sidebarOpen ? 'w-8 h-8 mr-3' : 'w-10 h-10'}`} />
@@ -59,10 +69,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         <button 
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="absolute -right-4 top-6 bg-brand-gold text-brand-blue p-1 rounded-full shadow-lg hover:scale-110 transition-transform"
+          onClick={() => {
+            if (typeof window !== 'undefined' && window.innerWidth < 768) {
+              setMobileMenuOpen(false);
+            } else {
+              setSidebarOpen(!sidebarOpen);
+            }
+          }}
+          className="absolute -right-4 top-6 bg-brand-gold text-brand-blue p-1 rounded-full shadow-lg hover:scale-110 transition-transform md:flex z-50"
         >
-          {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+          {(sidebarOpen || mobileMenuOpen) ? <X size={20} /> : <Menu size={20} />}
         </button>
 
         <nav className="flex-1 overflow-y-auto py-6 px-3 space-y-2 custom-scrollbar">
@@ -71,7 +87,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             const Icon = link.icon;
             
             return (
-              <Link key={link.name} href={link.href}>
+              <Link key={link.name} href={link.href} onClick={() => setMobileMenuOpen(false)}>
                 <div className={`flex items-center px-4 py-3 rounded-xl cursor-pointer transition-all duration-200 group ${
                   isActive 
                   ? "bg-brand-gold text-brand-blue shadow-lg font-medium" 
@@ -87,7 +103,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         <div className="p-4 border-t border-white/10">
           <div 
-            onClick={() => router.push('/admin/login')}
+            onClick={() => { setMobileMenuOpen(false); router.push('/admin/login'); }}
             className="flex items-center px-4 py-3 rounded-xl cursor-pointer text-red-300 hover:bg-red-500/10 transition-colors"
           >
             <LogOut size={22} className={sidebarOpen ? "mr-4" : "mx-auto"} />
@@ -102,7 +118,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 shadow-sm z-10 shrink-0">
           <div className="flex items-center">
              {/* Mobile Menu Button */}
-            <button className="md:hidden mr-4 text-brand-blue p-2 rounded-lg hover:bg-slate-100">
+            <button onClick={() => setMobileMenuOpen(true)} className="md:hidden mr-4 text-brand-blue p-2 rounded-lg hover:bg-slate-100">
               <Menu size={24} />
             </button>
             <h1 className="text-2xl font-bold text-brand-blue hidden sm:block">

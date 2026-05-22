@@ -10,6 +10,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
   const router = useRouter();
   const pathname = usePathname();
   const [student, setStudent] = useState<any>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("studentToken");
@@ -37,8 +38,16 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
 
   return (
     <div className="flex h-screen bg-slate-50 font-sans">
+      {/* Mobile Overlay */}
+      {mobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-20 md:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Student Sidebar */}
-      <aside className="w-72 bg-brand-blue text-white flex flex-col shadow-2xl relative z-20 hidden md:flex">
+      <aside className={`w-72 bg-brand-blue text-white flex-col shadow-2xl z-30 transition-all duration-300 ${mobileMenuOpen ? 'flex absolute inset-y-0 left-0' : 'hidden md:flex relative'}`}>
         <div className="p-8 pb-6 border-b border-white/10 flex items-center gap-3">
           <div className="w-10 h-10 bg-brand-gold rounded-xl flex items-center justify-center">
             <span className="text-brand-blue font-bold text-xl">S</span>
@@ -54,7 +63,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
             const isActive = pathname === item.path;
             const Icon = item.icon;
             return (
-              <Link key={item.name} href={item.path}>
+              <Link key={item.name} href={item.path} onClick={() => setMobileMenuOpen(false)}>
                 <div className={`flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 cursor-pointer ${
                   isActive ? "bg-brand-gold text-brand-blue font-bold shadow-md" : "text-blue-100 hover:bg-white/10 hover:text-white"
                 }`}>
@@ -68,7 +77,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
 
         <div className="p-6 border-t border-white/10">
           <button 
-            onClick={handleLogout}
+            onClick={() => { setMobileMenuOpen(false); handleLogout(); }}
             className="flex items-center gap-3 text-red-300 hover:text-white hover:bg-red-500/20 px-4 py-3 rounded-xl transition-all duration-200 w-full"
           >
             <LogOut className="w-5 h-5" />
@@ -80,7 +89,13 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden bg-[#F8FAFC]">
         {/* Top Header */}
-        <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-end px-8 shadow-sm relative z-10">
+        <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 shadow-sm relative z-10">
+          <div className="flex items-center">
+            {/* Mobile Menu Button */}
+            <button onClick={() => setMobileMenuOpen(true)} className="md:hidden mr-4 text-brand-blue p-2 rounded-lg hover:bg-slate-100">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+            </button>
+          </div>
           <div className="flex items-center gap-4">
             <div className="text-right hidden sm:block">
               <p className="text-sm font-bold text-slate-800">{student.name}</p>
