@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sankalp Library - Student Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Using lucide icons via unpkg -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-elements">
+        <div class="blob gold-blob"></div>
+        <div class="blob blue-blob"></div>
+    </div>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="icon-container">
+                <i data-lucide="user" class="icon-user"></i>
+            </div>
+            <h2>Student Login</h2>
+            <p class="subtitle">Welcome back to Sankalp Library</p>
+
+            <form id="loginForm">
+                <div class="input-group">
+                    <label>Student ID</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="book-open" class="input-icon"></i>
+                        <input type="text" placeholder="e.g. SANKALP001" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <div class="label-row">
+                        <label>Password</label>
+                        <a href="#" class="forgot-pwd">Forgot Password?</a>
+                    </div>
+                    <div class="input-wrapper">
+                        <i data-lucide="lock" class="input-icon"></i>
+                        <input type="password" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    Sign In
+                    <i data-lucide="arrow-right" class="btn-icon"></i>
+                </button>
+            </form>
+
+            <div class="footer">
+                <a href="#" onclick="alert('This is a preview! In the Next.js app, this takes you to the homepage.')">&larr; Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('This is a preview! In the real app, this will log you in.');
+        });
+    </script>
+</body>
+</html>
