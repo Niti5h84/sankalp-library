@@ -25,7 +25,10 @@ export default function StudentsPage() {
     shift: "Morning",
     totalFee: "1000",
     paidAmount: "1000",
-    feeMonth: "January"
+    feeMonth: "January",
+    admissionDate: new Date().toISOString().split('T')[0],
+    feeExpiryDate: new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0],
+    paymentMode: "Cash"
   });
 
   // Bill Modal State
@@ -77,7 +80,7 @@ export default function StudentsPage() {
       setIsModalOpen(false);
       setShowBillModal(true);
       
-      setFormData({ studentId: "", fullName: "", fatherName: "", studentAddress: "", phone: "", seat: "", shift: "Morning", totalFee: "1000", paidAmount: "1000", feeMonth: "January" });
+      setFormData({ studentId: "", fullName: "", fatherName: "", studentAddress: "", phone: "", seat: "", shift: "Morning", totalFee: "1000", paidAmount: "1000", feeMonth: "January", admissionDate: new Date().toISOString().split('T')[0], feeExpiryDate: new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0], paymentMode: "Cash" });
       setEditId(null);
     } catch (err) {
       console.error("Failed to save student", err);
@@ -99,7 +102,10 @@ export default function StudentsPage() {
       shift: student.shiftTiming || "Morning",
       totalFee: student.monthlyFee?.toString() || "1000",
       paidAmount: student.paidAmount?.toString() || "0",
-      feeMonth: student.feeMonth || "January"
+      feeMonth: student.feeMonth || "January",
+      admissionDate: student.admissionDate ? new Date(student.admissionDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+      feeExpiryDate: student.feeExpiryDate ? new Date(student.feeExpiryDate).toISOString().split('T')[0] : new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0],
+      paymentMode: student.paymentMode || "Cash"
     });
     setIsModalOpen(true);
   };
@@ -154,6 +160,9 @@ export default function StudentsPage() {
       totalFee: student.monthlyFee || 1000,
       paidAmount: student.paidAmount || 0,
       feeMonth: student.feeMonth || "January",
+      admissionDate: student.admissionDate ? new Date(student.admissionDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : "N/A",
+      feeExpiryDate: student.feeExpiryDate ? new Date(student.feeExpiryDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : "N/A",
+      paymentMode: student.paymentMode || "Cash",
       date: new Date(student.createdAt || new Date()).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
     });
     setShowBillModal(true);
@@ -174,7 +183,7 @@ export default function StudentsPage() {
         <button 
           onClick={() => {
             setEditId(null);
-            setFormData({ studentId: "", fullName: "", fatherName: "", studentAddress: "", phone: "", seat: "", shift: "Morning", totalFee: "1000", paidAmount: "1000", feeMonth: "January" });
+            setFormData({ studentId: "", fullName: "", fatherName: "", studentAddress: "", phone: "", seat: "", shift: "Morning", totalFee: "1000", paidAmount: "1000", feeMonth: "January", admissionDate: new Date().toISOString().split('T')[0], feeExpiryDate: new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0], paymentMode: "Cash" });
             setIsModalOpen(true);
           }}
           className="bg-brand-blue hover:bg-brand-blue-light text-white px-5 py-2.5 rounded-xl font-medium transition-colors flex items-center shadow-md"
@@ -263,6 +272,8 @@ export default function StudentsPage() {
                     <label className="text-sm font-medium text-slate-700">Paid Amount</label>
                     <input type="number" required value={formData.paidAmount} onChange={(e) => setFormData({...formData, paidAmount: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" placeholder="1000" />
                   </div>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-slate-700">Fee Month</label>
                     <select value={formData.feeMonth} onChange={(e) => setFormData({...formData, feeMonth: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none">
@@ -278,6 +289,24 @@ export default function StudentsPage() {
                       <option>October</option>
                       <option>November</option>
                       <option>December</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">Join Date</label>
+                    <input type="date" value={formData.admissionDate} onChange={(e) => setFormData({...formData, admissionDate: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">Validity (Expiry)</label>
+                    <input type="date" value={formData.feeExpiryDate} onChange={(e) => setFormData({...formData, feeExpiryDate: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">Payment Mode</label>
+                    <select value={formData.paymentMode} onChange={(e) => setFormData({...formData, paymentMode: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none">
+                      <option>Cash</option>
+                      <option>UPI</option>
+                      <option>Bank Transfer</option>
+                      <option>Monthly</option>
+                      <option>Installment</option>
                     </select>
                   </div>
                 </div>
@@ -340,6 +369,18 @@ export default function StudentsPage() {
                   <div className="flex justify-between border-b border-dashed border-slate-300 pb-2 print:pb-1">
                     <span className="font-semibold text-slate-600 print:text-slate-800">Seat & Shift:</span>
                     <span className="font-bold print:text-black">{billData.seat} ({billData.shift})</span>
+                  </div>
+                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2 print:pb-1">
+                    <span className="font-semibold text-slate-600 print:text-slate-800">Date of Join:</span>
+                    <span className="font-bold print:text-black">{billData.admissionDate}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2 print:pb-1">
+                    <span className="font-semibold text-slate-600 print:text-slate-800">Validity:</span>
+                    <span className="font-bold print:text-black">{billData.feeExpiryDate}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2 print:pb-1">
+                    <span className="font-semibold text-slate-600 print:text-slate-800">Payment Mode:</span>
+                    <span className="font-bold print:text-black">{billData.paymentMode}</span>
                   </div>
                   <div className="flex justify-between border-b border-dashed border-slate-300 pb-2 print:pb-1">
                     <span className="font-semibold text-slate-600 print:text-slate-800">Fee Month:</span>

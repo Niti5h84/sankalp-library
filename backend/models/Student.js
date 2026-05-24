@@ -19,6 +19,7 @@ const studentSchema = new mongoose.Schema({
   paidAmount: { type: Number, default: 0 },
   status: { type: String, enum: ['Active', 'Inactive', 'Suspended'], default: 'Active' },
   password: { type: String, required: true },
+  paymentMode: { type: String, default: 'Cash' },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Student', studentSchema);

@@ -9,16 +9,19 @@ const Attendance = require('../models/Attendance');
 // @desc Add a new student
 router.post('/', async (req, res) => {
   try {
-    const { studentId, fullName, fatherName, studentAddress, phone, seat, shift, totalFee, paidAmount, feeMonth } = req.body;
+    const { studentId, fullName, fatherName, studentAddress, phone, seat, shift, totalFee, paidAmount, feeMonth, admissionDate, feeExpiryDate, paymentMode } = req.body;
     
     // Hash default password (using phone number or default string)
     const salt = await bcrypt.genSalt(10);
     const defaultPassword = String(phone || '123456');
     const hashedPassword = await bcrypt.hash(defaultPassword, salt);
 
-    // Calculate expiry date (30 days from now)
-    const feeExpiryDate = new Date();
-    feeExpiryDate.setDate(feeExpiryDate.getDate() + 30);
+    // Calculate expiry date if not provided
+    let calculatedExpiry = feeExpiryDate;
+    if (!calculatedExpiry) {
+      calculatedExpiry = new Date(admissionDate || new Date());
+      calculatedExpiry.setDate(calculatedExpiry.getDate() + 30);
+    }
 
     const newStudent = new Student({
       studentId,
@@ -32,7 +35,9 @@ router.post('/', async (req, res) => {
       monthlyFee: totalFee || 1000, // Use provided totalFee or default
       feeMonth: feeMonth || "",
       paidAmount: paidAmount || 0,
-      feeExpiryDate,
+      feeExpiryDate: calculatedExpiry,
+      admissionDate: admissionDate ? new Date(admissionDate) : new Date(),
+      paymentMode: paymentMode || "Cash",
       password: hashedPassword
     });
 
@@ -73,7 +78,7 @@ router.get('/', async (req, res) => {
 // @desc Update an existing student
 router.put('/:id', async (req, res) => {
   try {
-    const { studentId, fullName, fatherName, studentAddress, phone, seat, shift, totalFee, paidAmount, feeMonth } = req.body;
+    const { studentId, fullName, fatherName, studentAddress, phone, seat, shift, totalFee, paidAmount, feeMonth, admissionDate, feeExpiryDate, paymentMode } = req.body;
     const student = await Student.findById(req.params.id);
     if (!student) return res.status(404).json({ msg: 'Student not found' });
 
@@ -103,7 +108,10 @@ router.put('/:id', async (req, res) => {
     student.shiftTiming = shift || student.shiftTiming;
     student.monthlyFee = totalFee !== undefined ? totalFee : student.monthlyFee;
     student.paidAmount = paidAmount !== undefined ? paidAmount : student.paidAmount;
-    student.feeMonth = feeMonth !== undefined ? feeMonth : student.feeMonth;
+    student.feeMonth = feeMonth || student.feeMonth;
+    if (admissionDate) student.admissionDate = new Date(admissionDate);
+    if (feeExpiryDate) student.feeExpiryDate = new Date(feeExpiryDate);
+    if (paymentMode) student.paymentMode = paymentMode;
 
     await student.save();
     res.json(student);
