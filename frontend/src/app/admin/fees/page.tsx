@@ -172,6 +172,9 @@ export default function FeesPage() {
                   </th>
                   <th className="px-6 py-4 font-semibold">Student Name</th>
                   <th className="px-6 py-4 font-semibold">Seat</th>
+                  <th className="px-6 py-4 font-semibold">Total Fee</th>
+                  <th className="px-6 py-4 font-semibold">Paid Amount</th>
+                  <th className="px-6 py-4 font-semibold">Pending Due</th>
                   <th className="px-6 py-4 font-semibold">Expiry Date</th>
                   <th className="px-6 py-4 font-semibold">Status</th>
                   <th className="px-6 py-4 font-semibold text-right">Actions</th>
@@ -195,6 +198,9 @@ export default function FeesPage() {
                         <div className="text-xs text-slate-500">{student.mobileNumber}</div>
                       </td>
                       <td className="px-6 py-4 font-medium text-slate-700">{student.address || "N/A"}</td>
+                      <td className="px-6 py-4 font-bold text-slate-700">₹{student.monthlyFee || 0}</td>
+                      <td className="px-6 py-4 font-bold text-green-600">₹{student.paidAmount || 0}</td>
+                      <td className="px-6 py-4 font-bold text-red-500">₹{Math.max(0, (student.monthlyFee || 0) - (student.paidAmount || 0))}</td>
                       <td className="px-6 py-4 text-sm text-slate-600">
                         {student.feeExpiryDate ? new Date(student.feeExpiryDate).toLocaleDateString() : 'Not Set'}
                       </td>
@@ -219,6 +225,21 @@ export default function FeesPage() {
                   );
                 })}
               </tbody>
+              <tfoot className="bg-slate-50 border-t-2 border-slate-200">
+                <tr>
+                  <td colSpan={3} className="px-6 py-4 font-bold text-right text-slate-700 uppercase tracking-wider">Grand Total:</td>
+                  <td className="px-6 py-4 font-bold text-slate-800 text-lg">
+                    ₹{filteredStudents.reduce((sum, s) => sum + (s.monthlyFee || 0), 0)}
+                  </td>
+                  <td className="px-6 py-4 font-bold text-green-600 text-lg">
+                    ₹{filteredStudents.reduce((sum, s) => sum + (s.paidAmount || 0), 0)}
+                  </td>
+                  <td className="px-6 py-4 font-bold text-red-600 text-lg">
+                    ₹{filteredStudents.reduce((sum, s) => sum + Math.max(0, (s.monthlyFee || 0) - (s.paidAmount || 0)), 0)}
+                  </td>
+                  <td colSpan={3}></td>
+                </tr>
+              </tfoot>
             </table>
           )}
           {filteredStudents.length === 0 && !isLoading && (

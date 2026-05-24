@@ -31,7 +31,7 @@ export default function DashboardPage() {
     { id: 3, name: "Empty Seats", value: statsData?.emptySeats || 0, icon: Armchair, color: "bg-brand-gold", textColor: "text-brand-gold", link: "/admin/seats" },
     { id: 4, name: "Occupied Seats", value: statsData?.occupiedSeats || 0, icon: Armchair, color: "bg-brand-blue", textColor: "text-brand-blue", link: "/admin/seats" },
     { id: 5, name: "Today Attendance", value: statsData?.todayAttendance || 0, icon: CalendarCheck, color: "bg-purple-500", textColor: "text-purple-600", link: "/admin/attendance" },
-    { id: 6, name: "Today Collection", value: `₹${statsData?.todayCollection || 0}`, icon: Wallet, color: "bg-emerald-500", textColor: "text-emerald-600", link: "/admin/fees" },
+    { id: 6, name: "Total Collection", value: `₹${statsData?.totalCollection || 0}`, icon: Wallet, color: "bg-emerald-500", textColor: "text-emerald-600", link: "/admin/fees" },
     { id: 7, name: "Pending Fees", value: `₹${statsData?.pendingFees || 0}`, icon: AlertCircle, color: "bg-red-500", textColor: "text-red-600", link: "/admin/fees" },
     { id: 8, name: "Monthly Revenue", value: `₹${statsData?.monthlyRevenue || 0}`, icon: TrendingUp, color: "bg-indigo-500", textColor: "text-indigo-600", link: "/admin/reports" },
   ];

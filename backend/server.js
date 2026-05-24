@@ -29,27 +29,38 @@ app.get('/api/health', (req, res) => {
 
 const Student = require('./models/Student');
 
-app.get('/api/dashboard/stats', async (req, res) => {
-  try {
-    const totalStudents = await Student.countDocuments();
-    const activeStudents = await Student.countDocuments(); // Assuming all are active for now, update status logic later if needed
-    
-    // For now, hardcode the total seats capacity to 100 for calculation
-    const totalSeats = 100;
-    const occupiedSeats = totalStudents;
-    const emptySeats = totalSeats - occupiedSeats;
-
-    res.json({
-      totalStudents: totalStudents,
-      activeStudents: activeStudents,
-      emptySeats: emptySeats,
-      occupiedSeats: occupiedSeats,
-      todayAttendance: 0,
-      todayCollection: 0,
-      pendingFees: 0,
-      monthlyRevenue: 0
-    });
-  } catch (error) {
+  app.get('/api/dashboard/stats', async (req, res) => {
+    try {
+      const students = await Student.find({});
+      const totalStudents = students.length;
+      const activeStudents = students.filter(s => s.status === 'Active').length;
+      
+      const totalSeats = 100;
+      const occupiedSeats = activeStudents;
+      const emptySeats = totalSeats - occupiedSeats;
+      
+      let totalCollection = 0;
+      let pendingFees = 0;
+      
+      students.forEach(s => {
+        totalCollection += (s.paidAmount || 0);
+        const pending = (s.monthlyFee || 0) - (s.paidAmount || 0);
+        if (pending > 0) {
+          pendingFees += pending;
+        }
+      });
+  
+      res.json({
+        totalStudents,
+        activeStudents,
+        emptySeats,
+        occupiedSeats,
+        todayAttendance: 0,
+        totalCollection: totalCollection,
+        pendingFees: pendingFees,
+        monthlyRevenue: totalCollection // For now, setting it same as total
+      });
+    } catch (error) {
     console.error("Dashboard Stats Error:", error);
     res.status(500).json({ msg: "Server Error fetching stats" });
   }
