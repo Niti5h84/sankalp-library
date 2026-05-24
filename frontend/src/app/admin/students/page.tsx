@@ -18,6 +18,8 @@ export default function StudentsPage() {
   const [formData, setFormData] = useState({
     studentId: "",
     fullName: "",
+    fatherName: "",
+    studentAddress: "",
     phone: "",
     seat: "",
     shift: "Morning",
@@ -75,7 +77,7 @@ export default function StudentsPage() {
       setIsModalOpen(false);
       setShowBillModal(true);
       
-      setFormData({ studentId: "", fullName: "", phone: "", seat: "", shift: "Morning", totalFee: "1000", paidAmount: "1000", feeMonth: "January" });
+      setFormData({ studentId: "", fullName: "", fatherName: "", studentAddress: "", phone: "", seat: "", shift: "Morning", totalFee: "1000", paidAmount: "1000", feeMonth: "January" });
       setEditId(null);
     } catch (err) {
       console.error("Failed to save student", err);
@@ -90,6 +92,8 @@ export default function StudentsPage() {
     setFormData({
       studentId: student.studentId,
       fullName: student.fullName,
+      fatherName: student.fatherName || "",
+      studentAddress: student.studentAddress || "",
       phone: student.mobileNumber,
       seat: student.address || "",
       shift: student.shiftTiming || "Morning",
@@ -139,7 +143,10 @@ export default function StudentsPage() {
 
   const handleShowReceipt = (student: any) => {
     setBillData({
+      _id: student._id,
       fullName: student.fullName,
+      fatherName: student.fatherName || "",
+      studentAddress: student.studentAddress || "",
       studentId: student.studentId,
       phone: student.mobileNumber,
       seat: student.address,
@@ -167,7 +174,7 @@ export default function StudentsPage() {
         <button 
           onClick={() => {
             setEditId(null);
-            setFormData({ studentId: "", fullName: "", phone: "", seat: "", shift: "Morning", totalFee: "1000", paidAmount: "1000", feeMonth: "January" });
+            setFormData({ studentId: "", fullName: "", fatherName: "", studentAddress: "", phone: "", seat: "", shift: "Morning", totalFee: "1000", paidAmount: "1000", feeMonth: "January" });
             setIsModalOpen(true);
           }}
           className="bg-brand-blue hover:bg-brand-blue-light text-white px-5 py-2.5 rounded-xl font-medium transition-colors flex items-center shadow-md"
@@ -201,6 +208,16 @@ export default function StudentsPage() {
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-slate-700">Full Name</label>
                     <input type="text" required value={formData.fullName} onChange={(e) => setFormData({...formData, fullName: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" placeholder="John Doe" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">Father's Name</label>
+                    <input type="text" value={formData.fatherName} onChange={(e) => setFormData({...formData, fatherName: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" placeholder="Father's Name" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">Address</label>
+                    <input type="text" value={formData.studentAddress} onChange={(e) => setFormData({...formData, studentAddress: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" placeholder="Student's Address" />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -290,6 +307,18 @@ export default function StudentsPage() {
                     <span className="font-semibold text-slate-600 print:text-slate-800">Student Name:</span>
                     <span className="font-bold print:text-black">{billData.fullName}</span>
                   </div>
+                  {billData.fatherName && (
+                    <div className="flex justify-between border-b border-dashed border-slate-300 pb-2 print:pb-1">
+                      <span className="font-semibold text-slate-600 print:text-slate-800">Father's Name:</span>
+                      <span className="font-bold print:text-black">{billData.fatherName}</span>
+                    </div>
+                  )}
+                  {billData.studentAddress && (
+                    <div className="flex justify-between border-b border-dashed border-slate-300 pb-2 print:pb-1">
+                      <span className="font-semibold text-slate-600 print:text-slate-800">Address:</span>
+                      <span className="font-bold print:text-black text-right max-w-[60%] truncate" title={billData.studentAddress}>{billData.studentAddress}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between border-b border-dashed border-slate-300 pb-2 print:pb-1">
                     <span className="font-semibold text-slate-600 print:text-slate-800">Student ID:</span>
                     <span className="font-bold print:text-black">{billData.studentId}</span>

@@ -9,7 +9,7 @@ const Attendance = require('../models/Attendance');
 // @desc Add a new student
 router.post('/', async (req, res) => {
   try {
-    const { studentId, fullName, phone, seat, shift, totalFee, paidAmount, feeMonth } = req.body;
+    const { studentId, fullName, fatherName, studentAddress, phone, seat, shift, totalFee, paidAmount, feeMonth } = req.body;
     
     // Hash default password (using phone number or default string)
     const salt = await bcrypt.genSalt(10);
@@ -23,6 +23,8 @@ router.post('/', async (req, res) => {
     const newStudent = new Student({
       studentId,
       fullName,
+      fatherName,
+      studentAddress,
       mobileNumber: phone,
       // mapping seat string to a simple field for now (to avoid populating object ID initially)
       address: seat, 
@@ -71,7 +73,7 @@ router.get('/', async (req, res) => {
 // @desc Update an existing student
 router.put('/:id', async (req, res) => {
   try {
-    const { studentId, fullName, phone, seat, shift, totalFee, paidAmount, feeMonth } = req.body;
+    const { studentId, fullName, fatherName, studentAddress, phone, seat, shift, totalFee, paidAmount, feeMonth } = req.body;
     const student = await Student.findById(req.params.id);
     if (!student) return res.status(404).json({ msg: 'Student not found' });
 
@@ -94,6 +96,8 @@ router.put('/:id', async (req, res) => {
 
     student.studentId = studentId || student.studentId;
     student.fullName = fullName || student.fullName;
+    student.fatherName = fatherName !== undefined ? fatherName : student.fatherName;
+    student.studentAddress = studentAddress !== undefined ? studentAddress : student.studentAddress;
     student.mobileNumber = phone || student.mobileNumber;
     student.address = seat || student.address;
     student.shiftTiming = shift || student.shiftTiming;
