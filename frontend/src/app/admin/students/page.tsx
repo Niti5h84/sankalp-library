@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Plus, Filter, MoreVertical, Edit, Trash2, X, Loader2, Key, FileText } from "lucide-react";
+import { Search, Plus, Filter, MoreVertical, Edit, Trash2, X, Loader2, Key, FileText, Printer } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import html2canvas from "html2canvas";
@@ -274,7 +274,7 @@ export default function StudentsPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden print:shadow-none print:w-full print:max-w-none print:rounded-none"
+              className="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto print:max-h-none print:shadow-none print:w-full print:max-w-none print:rounded-none"
             >
               {/* Printable Area */}
               <div id="printable-bill" className="p-8 pb-4 print:w-[105mm] print:h-[148mm] print:p-3 print:mx-auto print:border print:border-dashed print:border-slate-300 print:overflow-hidden print:flex print:flex-col print:justify-between print:bg-white text-slate-800">
@@ -342,15 +342,27 @@ export default function StudentsPage() {
               </div>
 
               {/* Action Buttons (Hidden in Print) */}
-              <div className="p-6 bg-slate-50 flex gap-3 print:hidden">
-                <button onClick={() => setShowBillModal(false)} className="px-4 py-2 text-slate-600 font-medium hover:bg-slate-200 rounded-lg transition-colors flex-1 text-center">
-                  Close
+              <div className="p-4 sm:p-6 bg-slate-50 grid grid-cols-2 gap-3 print:hidden sticky bottom-0 border-t border-slate-200">
+                <button onClick={() => setShowBillModal(false)} className="py-2.5 text-slate-600 font-medium hover:bg-slate-200 rounded-xl transition-colors col-span-1 flex items-center justify-center gap-2">
+                  <X className="w-4 h-4" /> Close
                 </button>
-                <button onClick={handleWhatsAppShare} className="bg-green-500 hover:bg-green-600 text-white font-bold px-4 py-2 rounded-lg transition-colors flex-1 flex items-center justify-center shadow-md">
+                <button 
+                  onClick={() => {
+                    const studentToEdit = students.find(s => s._id === billData._id);
+                    if(studentToEdit) {
+                      setShowBillModal(false);
+                      handleEditClick(studentToEdit);
+                    }
+                  }} 
+                  className="bg-brand-blue hover:bg-brand-blue-light text-white font-medium py-2.5 rounded-xl transition-colors shadow flex items-center justify-center gap-2 col-span-1"
+                >
+                  <Edit className="w-4 h-4" /> Edit
+                </button>
+                <button onClick={handleWhatsAppShare} className="bg-green-500 hover:bg-green-600 text-white font-bold py-2.5 rounded-xl transition-colors shadow flex items-center justify-center gap-2 col-span-1">
                   WhatsApp
                 </button>
-                <button onClick={handlePrintBill} className="bg-brand-blue hover:bg-brand-blue-light text-white font-bold px-4 py-2 rounded-lg transition-colors flex-1 flex items-center justify-center shadow-md">
-                  Print
+                <button onClick={() => window.print()} className="bg-brand-gold hover:bg-brand-gold-light text-brand-blue font-bold py-2.5 rounded-xl transition-colors shadow-md flex items-center justify-center gap-2 col-span-1">
+                  <Printer className="w-5 h-5" /> Print
                 </button>
               </div>
             </motion.div>
