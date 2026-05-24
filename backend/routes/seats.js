@@ -14,6 +14,30 @@ router.get('/', async (req, res) => {
   }
 });
 
+// TEMPORARY SYNC ROUTE
+router.get('/sync-status', async (req, res) => {
+  try {
+    const Student = require('../models/Student');
+    await Seat.updateMany({}, { status: 'Available', assignedTo: null });
+    const activeStudents = await Student.find({ status: 'Active' });
+    for (const student of activeStudents) {
+      if (student.address) {
+        await Seat.findOneAndUpdate(
+          { seatNumber: student.address.trim() },
+          { 
+            $set: { status: 'Occupied', assignedTo: student._id }, 
+            $setOnInsert: { floorNumber: 1, seatType: 'Normal' } 
+          },
+          { upsert: true }
+        );
+      }
+    }
+    res.send("Sync Complete!");
+  } catch(e) { 
+    res.status(500).send(e.message); 
+  }
+});
+
 // @route POST /api/seats
 // @desc Add a new seat
 router.post('/', async (req, res) => {

@@ -44,7 +44,7 @@ export default function SeatsPage() {
       setEditSeatId(null);
     } catch (err) {
       console.error(err);
-      alert("Failed to add seat. Seat number might already exist.");
+      alert("Failed to save seat. Seat number might already exist.");
     } finally {
       setIsSubmitting(false);
     }
