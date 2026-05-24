@@ -40,7 +40,11 @@ router.post('/', async (req, res) => {
     if (seat) {
       await Seat.findOneAndUpdate(
         { seatNumber: seat },
-        { status: 'Occupied', assignedTo: student._id }
+        { 
+          $set: { status: 'Occupied', assignedTo: student._id },
+          $setOnInsert: { floorNumber: 1, seatType: 'Normal' }
+        },
+        { upsert: true, new: true }
       );
     }
 
@@ -77,7 +81,14 @@ router.put('/:id', async (req, res) => {
         await Seat.findOneAndUpdate({ seatNumber: student.address }, { status: 'Empty', assignedTo: null });
       }
       if (seat) {
-        await Seat.findOneAndUpdate({ seatNumber: seat }, { status: 'Occupied', assignedTo: student._id });
+        await Seat.findOneAndUpdate(
+          { seatNumber: seat }, 
+          { 
+            $set: { status: 'Occupied', assignedTo: student._id },
+            $setOnInsert: { floorNumber: 1, seatType: 'Normal' }
+          },
+          { upsert: true, new: true }
+        );
       }
     }
 

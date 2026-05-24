@@ -210,14 +210,12 @@ export default function StudentsPage() {
                   </div>
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-slate-700">Assigned Seat</label>
-                    <select required value={formData.seat} onChange={(e) => setFormData({...formData, seat: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none">
-                      <option value="">-- Select Seat --</option>
+                    <input list="seat-options" type="text" required value={formData.seat} onChange={(e) => setFormData({...formData, seat: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" placeholder="e.g. A-12" />
+                    <datalist id="seat-options">
                       {availableSeats.map(seat => (
-                        <option key={seat._id} value={seat.seatNumber}>
-                          {seat.seatNumber} ({seat.status})
-                        </option>
+                        <option key={seat._id} value={seat.seatNumber} />
                       ))}
-                    </select>
+                    </datalist>
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-4">

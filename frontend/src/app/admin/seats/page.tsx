@@ -65,7 +65,7 @@ export default function SeatsPage() {
         </div>
         <div className="flex gap-4 items-center">
           <div className="flex gap-4 text-sm font-medium bg-white px-4 py-2 rounded-xl border border-slate-100 shadow-sm">
-            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-brand-blue"></div><span>Occupied</span></div>
+            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-green-500"></div><span>Occupied</span></div>
             <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-slate-200 border border-slate-300"></div><span>Empty</span></div>
           </div>
           <button onClick={() => setIsModalOpen(true)} className="bg-brand-blue hover:bg-brand-blue-light text-white px-5 py-2.5 rounded-xl font-medium transition-colors flex items-center shadow-md">
@@ -132,15 +132,15 @@ export default function SeatsPage() {
                       initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: index * 0.02 }}
                       className={`relative group p-4 rounded-xl border flex flex-col items-center justify-center gap-2 cursor-pointer transition-all duration-200
                         ${isOccupied 
-                          ? 'bg-brand-blue text-white border-brand-blue shadow-md shadow-brand-blue/20 hover:bg-brand-blue-light' 
+                          ? 'bg-green-500 text-white border-green-600 shadow-md shadow-green-500/20 hover:bg-green-600' 
                           : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-brand-gold hover:bg-white hover:shadow-md'
                         }
                       `}
                     >
-                      <Armchair className={`w-8 h-8 ${isOccupied ? 'text-brand-gold' : 'text-slate-300'}`} />
+                      <Armchair className={`w-8 h-8 ${isOccupied ? 'text-white' : 'text-slate-300'}`} />
                       <span className="font-bold">{seat.seatNumber}</span>
                       <div className="text-[10px] font-medium opacity-70 flex items-center gap-1">
-                         {isOccupied ? <User className="w-3 h-3 text-brand-gold" /> : <CheckCircle2 className="w-3 h-3 text-slate-300" />}
+                         {isOccupied ? <User className="w-3 h-3 text-white" /> : <CheckCircle2 className="w-3 h-3 text-slate-300" />}
                          {seat.seatType}
                       </div>
                       
