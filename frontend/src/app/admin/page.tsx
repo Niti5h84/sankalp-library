@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Users, UserCheck, Armchair, Wallet, CalendarCheck, TrendingUp, AlertCircle, Loader2 } from "lucide-react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [statsData, setStatsData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -24,14 +26,14 @@ export default function DashboardPage() {
   }, []);
 
   const stats = [
-    { id: 1, name: "Total Students", value: statsData?.totalStudents || 0, icon: Users, color: "bg-blue-500", textColor: "text-blue-600" },
-    { id: 2, name: "Active Students", value: statsData?.activeStudents || 0, icon: UserCheck, color: "bg-green-500", textColor: "text-green-600" },
-    { id: 3, name: "Empty Seats", value: statsData?.emptySeats || 0, icon: Armchair, color: "bg-brand-gold", textColor: "text-brand-gold" },
-    { id: 4, name: "Occupied Seats", value: statsData?.occupiedSeats || 0, icon: Armchair, color: "bg-brand-blue", textColor: "text-brand-blue" },
-    { id: 5, name: "Today Attendance", value: statsData?.todayAttendance || 0, icon: CalendarCheck, color: "bg-purple-500", textColor: "text-purple-600" },
-    { id: 6, name: "Today Collection", value: `₹${statsData?.todayCollection || 0}`, icon: Wallet, color: "bg-emerald-500", textColor: "text-emerald-600" },
-    { id: 7, name: "Pending Fees", value: `₹${statsData?.pendingFees || 0}`, icon: AlertCircle, color: "bg-red-500", textColor: "text-red-600" },
-    { id: 8, name: "Monthly Revenue", value: `₹${statsData?.monthlyRevenue || 0}`, icon: TrendingUp, color: "bg-indigo-500", textColor: "text-indigo-600" },
+    { id: 1, name: "Total Students", value: statsData?.totalStudents || 0, icon: Users, color: "bg-blue-500", textColor: "text-blue-600", link: "/admin/students" },
+    { id: 2, name: "Active Students", value: statsData?.activeStudents || 0, icon: UserCheck, color: "bg-green-500", textColor: "text-green-600", link: "/admin/students" },
+    { id: 3, name: "Empty Seats", value: statsData?.emptySeats || 0, icon: Armchair, color: "bg-brand-gold", textColor: "text-brand-gold", link: "/admin/seats" },
+    { id: 4, name: "Occupied Seats", value: statsData?.occupiedSeats || 0, icon: Armchair, color: "bg-brand-blue", textColor: "text-brand-blue", link: "/admin/seats" },
+    { id: 5, name: "Today Attendance", value: statsData?.todayAttendance || 0, icon: CalendarCheck, color: "bg-purple-500", textColor: "text-purple-600", link: "/admin/attendance" },
+    { id: 6, name: "Today Collection", value: `₹${statsData?.todayCollection || 0}`, icon: Wallet, color: "bg-emerald-500", textColor: "text-emerald-600", link: "/admin/fees" },
+    { id: 7, name: "Pending Fees", value: `₹${statsData?.pendingFees || 0}`, icon: AlertCircle, color: "bg-red-500", textColor: "text-red-600", link: "/admin/fees" },
+    { id: 8, name: "Monthly Revenue", value: `₹${statsData?.monthlyRevenue || 0}`, icon: TrendingUp, color: "bg-indigo-500", textColor: "text-indigo-600", link: "/admin/reports" },
   ];
 
   return (
@@ -62,7 +64,8 @@ export default function DashboardPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.05 }}
-                className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-shadow group"
+                onClick={() => router.push(stat.link)}
+                className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-shadow group cursor-pointer"
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${stat.color} bg-opacity-10 group-hover:scale-110 transition-transform duration-300`}>
