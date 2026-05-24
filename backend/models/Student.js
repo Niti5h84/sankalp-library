@@ -14,6 +14,7 @@ const studentSchema = new mongoose.Schema({
   seatNumber: { type: mongoose.Schema.Types.ObjectId, ref: 'Seat' },
   shiftTiming: { type: String },
   monthlyFee: { type: Number, required: true },
+  paidAmount: { type: Number, default: 0 },
   status: { type: String, enum: ['Active', 'Inactive', 'Suspended'], default: 'Active' },
   password: { type: String, required: true },
 }, { timestamps: true });

@@ -9,7 +9,7 @@ const Attendance = require('../models/Attendance');
 // @desc Add a new student
 router.post('/', async (req, res) => {
   try {
-    const { studentId, fullName, phone, seat, shift } = req.body;
+    const { studentId, fullName, phone, seat, shift, totalFee, paidAmount } = req.body;
     
     // Hash default password (using phone number or default string)
     const salt = await bcrypt.genSalt(10);
@@ -27,7 +27,8 @@ router.post('/', async (req, res) => {
       // mapping seat string to a simple field for now (to avoid populating object ID initially)
       address: seat, 
       shiftTiming: shift,
-      monthlyFee: 1000, // default mock fee
+      monthlyFee: totalFee || 1000, // Use provided totalFee or default
+      paidAmount: paidAmount || 0,
       feeExpiryDate,
       password: hashedPassword
     });

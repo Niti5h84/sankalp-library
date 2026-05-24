@@ -12,14 +12,19 @@ export default function StudentsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // New Student Form State
   const [formData, setFormData] = useState({
     studentId: "",
     fullName: "",
     phone: "",
     seat: "",
     shift: "Morning",
+    totalFee: "1000",
+    paidAmount: "1000"
   });
+
+  // Bill Modal State
+  const [showBillModal, setShowBillModal] = useState(false);
+  const [billData, setBillData] = useState<any>(null);
 
   const fetchStudents = async () => {
     try {
@@ -41,16 +46,36 @@ export default function StudentsPage() {
     e.preventDefault();
     try {
       setIsSubmitting(true);
-      await axios.post("https://sankalp-library.onrender.com/api/students", formData);
+      const res = await axios.post("https://sankalp-library.onrender.com/api/students", formData);
       await fetchStudents();
+      
+      // Open Bill Modal instead of just closing
+      setBillData({
+        ...formData,
+        date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+      });
       setIsModalOpen(false);
-      setFormData({ studentId: "", fullName: "", phone: "", seat: "", shift: "Morning" });
+      setShowBillModal(true);
+      
+      setFormData({ studentId: "", fullName: "", phone: "", seat: "", shift: "Morning", totalFee: "1000", paidAmount: "1000" });
     } catch (err) {
       console.error("Failed to add student", err);
       alert("Failed to add student. Ensure backend is running.");
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handlePrintBill = () => {
+    window.print();
+  };
+
+  const handleWhatsAppShare = () => {
+    if (!billData) return;
+    const dueAmount = Number(billData.totalFee) - Number(billData.paidAmount);
+    const message = `*Sankalp Library - Admission Receipt* 📚\n\n*Name:* ${billData.fullName}\n*Student ID:* ${billData.studentId}\n*Seat:* ${billData.seat} (${billData.shift})\n*Date:* ${billData.date}\n\n*Total Fee:* ₹${billData.totalFee}\n*Amount Paid:* ₹${billData.paidAmount}\n*Due Amount:* ₹${dueAmount}\n\nThank you for joining Sankalp Library!`;
+    const encodedMessage = encodeURIComponent(message);
+    window.open(`https://wa.me/91${billData.phone}?text=${encodedMessage}`, '_blank');
   };
 
   const handleDeleteStudent = async (id: string) => {
@@ -135,14 +160,24 @@ export default function StudentsPage() {
                     <input type="text" required value={formData.seat} onChange={(e) => setFormData({...formData, seat: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" placeholder="e.g. A-12" />
                   </div>
                 </div>
-                <div className="space-y-1">
-                  <label className="text-sm font-medium text-slate-700">Shift Timing</label>
-                  <select value={formData.shift} onChange={(e) => setFormData({...formData, shift: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none">
-                    <option>Morning</option>
-                    <option>Evening</option>
-                    <option>Full Day</option>
-                    <option>Night</option>
-                  </select>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">Shift Timing</label>
+                    <select value={formData.shift} onChange={(e) => setFormData({...formData, shift: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none">
+                      <option>Morning</option>
+                      <option>Evening</option>
+                      <option>Full Day</option>
+                      <option>Night</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">Total Fee (₹)</label>
+                    <input type="number" required value={formData.totalFee} onChange={(e) => setFormData({...formData, totalFee: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" placeholder="1000" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">Amount Paid (₹)</label>
+                    <input type="number" required value={formData.paidAmount} onChange={(e) => setFormData({...formData, paidAmount: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" placeholder="1000" />
+                  </div>
                 </div>
                 <div className="pt-4 flex justify-end gap-3">
                   <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-slate-600 font-medium hover:bg-slate-100 rounded-lg transition-colors">Cancel</button>
@@ -156,7 +191,79 @@ export default function StudentsPage() {
         )}
       </AnimatePresence>
 
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+      {/* Printable Bill Modal */}
+      <AnimatePresence>
+        {showBillModal && billData && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm print:bg-white print:p-0">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden print:shadow-none print:w-full print:max-w-none print:rounded-none"
+            >
+              {/* Printable Area */}
+              <div id="printable-bill" className="p-8 pb-4">
+                <div className="text-center border-b-2 border-slate-800 pb-4 mb-6">
+                  <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 uppercase">Sankalp Library</h1>
+                  <p className="text-slate-600 mt-1">Premium Study Center & Reading Room</p>
+                  <p className="text-slate-500 text-sm mt-1">Receipt No: #{Math.floor(10000 + Math.random() * 90000)} | Date: {billData.date}</p>
+                </div>
+
+                <div className="space-y-4 text-slate-800 text-sm sm:text-base">
+                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2">
+                    <span className="font-semibold text-slate-600">Student Name:</span>
+                    <span className="font-bold">{billData.fullName}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2">
+                    <span className="font-semibold text-slate-600">Student ID:</span>
+                    <span className="font-bold">{billData.studentId}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2">
+                    <span className="font-semibold text-slate-600">Mobile No:</span>
+                    <span className="font-bold">{billData.phone}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2">
+                    <span className="font-semibold text-slate-600">Seat & Shift:</span>
+                    <span className="font-bold">{billData.seat} ({billData.shift})</span>
+                  </div>
+                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2">
+                    <span className="font-semibold text-slate-600">Total Fee:</span>
+                    <span className="font-bold">₹ {billData.totalFee}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2 text-green-700">
+                    <span className="font-semibold">Amount Paid:</span>
+                    <span className="font-bold">₹ {billData.paidAmount}</span>
+                  </div>
+                  <div className="flex justify-between pt-1 text-red-600">
+                    <span className="font-semibold">Due Amount:</span>
+                    <span className="font-bold text-lg">₹ {Number(billData.totalFee) - Number(billData.paidAmount)}</span>
+                  </div>
+                </div>
+
+                <div className="mt-10 pt-4 border-t border-slate-200 text-center text-xs text-slate-500 space-y-1 print:block">
+                  <p>Thank you for choosing Sankalp Library!</p>
+                  <p className="font-semibold">Note: Fees once paid are strictly non-refundable.</p>
+                </div>
+              </div>
+
+              {/* Action Buttons (Hidden in Print) */}
+              <div className="p-6 bg-slate-50 flex gap-3 print:hidden">
+                <button onClick={() => setShowBillModal(false)} className="px-4 py-2 text-slate-600 font-medium hover:bg-slate-200 rounded-lg transition-colors flex-1 text-center">
+                  Close
+                </button>
+                <button onClick={handleWhatsAppShare} className="bg-green-500 hover:bg-green-600 text-white font-bold px-4 py-2 rounded-lg transition-colors flex-1 flex items-center justify-center shadow-md">
+                  WhatsApp
+                </button>
+                <button onClick={handlePrintBill} className="bg-brand-blue hover:bg-brand-blue-light text-white font-bold px-4 py-2 rounded-lg transition-colors flex-1 flex items-center justify-center shadow-md">
+                  Print
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden print:hidden">
         {/* Table Controls */}
         <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50/50">
           <div className="relative w-full sm:w-96">
