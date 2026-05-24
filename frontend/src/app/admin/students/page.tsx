@@ -218,9 +218,9 @@ export default function StudentsPage() {
                     </datalist>
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-700">Shift Timing</label>
+                    <label className="text-sm font-medium text-slate-700">Shift</label>
                     <select value={formData.shift} onChange={(e) => setFormData({...formData, shift: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none">
                       <option>Morning</option>
                       <option>Evening</option>
@@ -228,32 +228,31 @@ export default function StudentsPage() {
                       <option>Night</option>
                     </select>
                   </div>
-                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-700">Total Fee (₹)</label>
+                    <label className="text-sm font-medium text-slate-700">Total Fee</label>
                     <input type="number" required value={formData.totalFee} onChange={(e) => setFormData({...formData, totalFee: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" placeholder="1000" />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-700">Amount Paid (₹)</label>
+                    <label className="text-sm font-medium text-slate-700">Paid Amount</label>
                     <input type="number" required value={formData.paidAmount} onChange={(e) => setFormData({...formData, paidAmount: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" placeholder="1000" />
                   </div>
-                </div>
-                <div className="space-y-1">
-                  <label className="text-sm font-medium text-slate-700">Fee Month</label>
-                  <select value={formData.feeMonth} onChange={(e) => setFormData({...formData, feeMonth: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none">
-                    <option>January</option>
-                    <option>February</option>
-                    <option>March</option>
-                    <option>April</option>
-                    <option>May</option>
-                    <option>June</option>
-                    <option>July</option>
-                    <option>August</option>
-                    <option>September</option>
-                    <option>October</option>
-                    <option>November</option>
-                    <option>December</option>
-                  </select>
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">Fee Month</label>
+                    <select value={formData.feeMonth} onChange={(e) => setFormData({...formData, feeMonth: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none">
+                      <option>January</option>
+                      <option>February</option>
+                      <option>March</option>
+                      <option>April</option>
+                      <option>May</option>
+                      <option>June</option>
+                      <option>July</option>
+                      <option>August</option>
+                      <option>September</option>
+                      <option>October</option>
+                      <option>November</option>
+                      <option>December</option>
+                    </select>
+                  </div>
                 </div>
                 <div className="pt-4 flex justify-end gap-3">
                   <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-slate-600 font-medium hover:bg-slate-100 rounded-lg transition-colors">Cancel</button>
