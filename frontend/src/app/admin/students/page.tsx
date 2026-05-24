@@ -15,6 +15,9 @@ export default function StudentsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
 
+  const [isCustomShift, setIsCustomShift] = useState(false);
+  const predefinedShifts = ["Morning", "Evening", "Full Day", "Night", "4 घंटा", "6 घंटा", "8 घंटा", "10 घंटा", "12 घंटा", "14 घंटा", "16 घंटा", "18 घंटा", "24 घंटा"];
+
   const [formData, setFormData] = useState({
     studentId: "",
     fullName: "",
@@ -81,6 +84,7 @@ export default function StudentsPage() {
       setShowBillModal(true);
       
       setFormData({ studentId: "", fullName: "", fatherName: "", studentAddress: "", phone: "", seat: "", shift: "Morning", totalFee: "1000", paidAmount: "1000", feeMonth: "January", admissionDate: new Date().toISOString().split('T')[0], feeExpiryDate: new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0], paymentMode: "Cash" });
+      setIsCustomShift(false);
       setEditId(null);
     } catch (err) {
       console.error("Failed to save student", err);
@@ -92,6 +96,13 @@ export default function StudentsPage() {
 
   const handleEditClick = (student: any) => {
     setEditId(student._id);
+    const shiftValue = student.shiftTiming || "Morning";
+    if (!predefinedShifts.includes(shiftValue)) {
+      setIsCustomShift(true);
+    } else {
+      setIsCustomShift(false);
+    }
+    
     setFormData({
       studentId: student.studentId,
       fullName: student.fullName,
@@ -99,7 +110,7 @@ export default function StudentsPage() {
       studentAddress: student.studentAddress || "",
       phone: student.mobileNumber,
       seat: student.address || "",
-      shift: student.shiftTiming || "Morning",
+      shift: shiftValue,
       totalFee: student.monthlyFee?.toString() || "1000",
       paidAmount: student.paidAmount?.toString() || "0",
       feeMonth: student.feeMonth || "January",
@@ -183,6 +194,7 @@ export default function StudentsPage() {
         <button 
           onClick={() => {
             setEditId(null);
+            setIsCustomShift(false);
             setFormData({ studentId: "", fullName: "", fatherName: "", studentAddress: "", phone: "", seat: "", shift: "Morning", totalFee: "1000", paidAmount: "1000", feeMonth: "January", admissionDate: new Date().toISOString().split('T')[0], feeExpiryDate: new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0], paymentMode: "Cash" });
             setIsModalOpen(true);
           }}
@@ -247,22 +259,30 @@ export default function StudentsPage() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-slate-700">Shift</label>
-                    <input list="shift-options" type="text" value={formData.shift} onChange={(e) => setFormData({...formData, shift: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" placeholder="Select or type time..." />
-                    <datalist id="shift-options">
-                      <option value="Morning" />
-                      <option value="Evening" />
-                      <option value="Full Day" />
-                      <option value="Night" />
-                      <option value="4 घंटा" />
-                      <option value="6 घंटा" />
-                      <option value="8 घंटा" />
-                      <option value="10 घंटा" />
-                      <option value="12 घंटा" />
-                      <option value="14 घंटा" />
-                      <option value="16 घंटा" />
-                      <option value="18 घंटा" />
-                      <option value="24 घंटा" />
-                    </datalist>
+                    {isCustomShift ? (
+                      <div className="flex gap-2">
+                        <input type="text" autoFocus value={formData.shift} onChange={(e) => setFormData({...formData, shift: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" placeholder="Type custom time..." />
+                        <button type="button" onClick={() => { setIsCustomShift(false); setFormData({...formData, shift: 'Morning'}); }} className="px-3 py-2 bg-slate-200 text-slate-600 rounded-lg hover:bg-slate-300 font-bold transition-colors">
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+                    ) : (
+                      <select 
+                        value={formData.shift} 
+                        onChange={(e) => {
+                          if (e.target.value === 'Custom') {
+                            setIsCustomShift(true);
+                            setFormData({...formData, shift: ''});
+                          } else {
+                            setFormData({...formData, shift: e.target.value});
+                          }
+                        }} 
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none bg-white"
+                      >
+                        {predefinedShifts.map(s => <option key={s} value={s}>{s}</option>)}
+                        <option value="Custom" className="font-bold text-brand-blue">✍️ Custom Time...</option>
+                      </select>
+                    )}
                   </div>
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-slate-700">Total Fee</label>
