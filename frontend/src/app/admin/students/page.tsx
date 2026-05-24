@@ -279,8 +279,9 @@ export default function StudentsPage() {
               {/* Printable Area */}
               <div id="printable-bill" className="p-8 pb-4">
                 <div className="text-center border-b-2 border-slate-800 pb-4 mb-6">
-                  <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 uppercase">Sankalp Library</h1>
-                  <p className="text-slate-600 mt-1">Premium Study Center & Reading Room</p>
+                  <h1 className="text-3xl font-extrabold tracking-tight text-brand-blue uppercase">Sankalp Library</h1>
+                  <p className="text-slate-600 mt-1 font-medium">पता- हाईस्कूल के नजदीक, आवापुर</p>
+                  <p className="text-slate-600 font-semibold mb-2">Mob: 8271925247</p>
                   <p className="text-slate-500 text-sm mt-1">Receipt No: #{Math.floor(10000 + Math.random() * 90000)} | Date: {billData.date}</p>
                 </div>
 
@@ -313,9 +314,24 @@ export default function StudentsPage() {
                     <span className="font-semibold">Amount Paid:</span>
                     <span className="font-bold">₹ {billData.paidAmount}</span>
                   </div>
-                  <div className="flex justify-between pt-1 text-red-600">
+                  <div className="flex justify-between pt-1 text-red-600 mb-4">
                     <span className="font-semibold">Due Amount:</span>
                     <span className="font-bold text-lg">₹ {Number(billData.totalFee) - Number(billData.paidAmount)}</span>
+                  </div>
+
+                  <div className="mt-8 pt-6 flex justify-between items-end text-sm text-slate-800 font-medium">
+                    <div className="text-center">
+                      <div className="w-28 border-b-2 border-slate-400 mb-1"></div>
+                      Student's Sign.
+                    </div>
+                    <div className="text-center">
+                      <div className="w-28 border-b-2 border-slate-400 mb-1"></div>
+                      Authorised Signature
+                    </div>
+                  </div>
+
+                  <div className="mt-6 text-center text-xs md:text-sm text-red-600 font-bold bg-red-50 p-2.5 rounded border border-red-100">
+                    नोट - प्रत्येक माह में 5 दिन के अंदर पेमेंट करना अनिवार्य है।
                   </div>
                 </div>
 
