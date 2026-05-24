@@ -129,22 +129,38 @@ export default function SeatsPage() {
                   return (
                     <motion.div 
                       key={seat._id}
-                      initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: index * 0.02 }}
-                      className={`relative group p-4 rounded-xl border flex flex-col items-center justify-center gap-2 cursor-pointer transition-all duration-200
+                      initial={{ opacity: 0, scale: 0.9, y: 10 }} 
+                      animate={{ opacity: 1, scale: 1, y: 0 }} 
+                      transition={{ delay: index * 0.02, type: "spring", stiffness: 200 }}
+                      className={`relative group p-4 rounded-2xl border-2 flex flex-col items-center justify-center gap-3 cursor-pointer transition-all duration-300
                         ${isOccupied 
-                          ? 'bg-green-500 text-white border-green-600 shadow-md shadow-green-500/20 hover:bg-green-600' 
-                          : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-brand-gold hover:bg-white hover:shadow-md'
+                          ? 'bg-gradient-to-b from-green-500 to-green-600 text-white border-green-400 shadow-lg shadow-green-500/30 hover:shadow-green-500/50 hover:-translate-y-1' 
+                          : 'bg-gradient-to-b from-slate-50 to-white text-slate-600 border-slate-200 hover:border-brand-gold hover:shadow-xl hover:-translate-y-1'
                         }
                       `}
                     >
-                      <Armchair className={`w-8 h-8 ${isOccupied ? 'text-white' : 'text-slate-300'}`} />
-                      <span className="font-bold">{seat.seatNumber}</span>
-                      <div className="text-[10px] font-medium opacity-70 flex items-center gap-1">
-                         {isOccupied ? <User className="w-3 h-3 text-white" /> : <CheckCircle2 className="w-3 h-3 text-slate-300" />}
+                      <div className={`p-3 rounded-full ${isOccupied ? 'bg-white/20 shadow-inner' : 'bg-slate-100 shadow-sm'}`}>
+                        <Armchair className={`w-8 h-8 ${isOccupied ? 'text-white' : 'text-slate-400 group-hover:text-brand-gold transition-colors'}`} />
+                      </div>
+                      
+                      <div className="text-center">
+                        <span className="font-extrabold text-lg tracking-tight block">{seat.seatNumber}</span>
+                        {isOccupied && seat.assignedTo && (
+                           <span className="text-xs font-medium bg-white/20 px-2 py-0.5 rounded-full mt-1 block truncate max-w-[100px]" title={seat.assignedTo.fullName}>
+                             {seat.assignedTo.fullName.split(' ')[0]}
+                           </span>
+                        )}
+                        {!isOccupied && (
+                          <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mt-1">Available</span>
+                        )}
+                      </div>
+
+                      <div className="text-[10px] font-medium opacity-80 flex items-center gap-1 mt-1 bg-black/5 px-2 py-0.5 rounded-lg backdrop-blur-sm">
+                         {isOccupied ? <User className="w-3 h-3 text-white" /> : <CheckCircle2 className="w-3 h-3 text-slate-400" />}
                          {seat.seatType}
                       </div>
                       
-                      <button onClick={(e) => { e.stopPropagation(); handleDeleteSeat(seat._id); }} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110">
+                      <button onClick={(e) => { e.stopPropagation(); handleDeleteSeat(seat._id); }} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-all hover:scale-110 shadow-md">
                          <Trash2 className="w-3 h-3" />
                       </button>
                     </motion.div>
