@@ -238,12 +238,22 @@ export default function StudentsPage() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-slate-700">Shift</label>
-                    <select value={formData.shift} onChange={(e) => setFormData({...formData, shift: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none">
-                      <option>Morning</option>
-                      <option>Evening</option>
-                      <option>Full Day</option>
-                      <option>Night</option>
-                    </select>
+                    <input list="shift-options" type="text" value={formData.shift} onChange={(e) => setFormData({...formData, shift: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" placeholder="Select or type time..." />
+                    <datalist id="shift-options">
+                      <option value="Morning" />
+                      <option value="Evening" />
+                      <option value="Full Day" />
+                      <option value="Night" />
+                      <option value="4 घंटा" />
+                      <option value="6 घंटा" />
+                      <option value="8 घंटा" />
+                      <option value="10 घंटा" />
+                      <option value="12 घंटा" />
+                      <option value="14 घंटा" />
+                      <option value="16 घंटा" />
+                      <option value="18 घंटा" />
+                      <option value="24 घंटा" />
+                    </datalist>
                   </div>
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-slate-700">Total Fee</label>
