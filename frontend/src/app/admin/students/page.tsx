@@ -12,6 +12,7 @@ export default function StudentsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     studentId: "",
@@ -47,7 +48,11 @@ export default function StudentsPage() {
     e.preventDefault();
     try {
       setIsSubmitting(true);
-      const res = await axios.post("https://sankalp-library.onrender.com/api/students", formData);
+      if (editId) {
+        await axios.put(`https://sankalp-library.onrender.com/api/students/${editId}`, formData);
+      } else {
+        await axios.post("https://sankalp-library.onrender.com/api/students", formData);
+      }
       await fetchStudents();
       
       // Open Bill Modal instead of just closing
@@ -59,12 +64,27 @@ export default function StudentsPage() {
       setShowBillModal(true);
       
       setFormData({ studentId: "", fullName: "", phone: "", seat: "", shift: "Morning", totalFee: "1000", paidAmount: "1000" });
+      setEditId(null);
     } catch (err) {
-      console.error("Failed to add student", err);
-      alert("Failed to add student. Ensure backend is running.");
+      console.error("Failed to save student", err);
+      alert("Failed to save student. Ensure backend is running.");
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleEditClick = (student: any) => {
+    setEditId(student._id);
+    setFormData({
+      studentId: student.studentId,
+      fullName: student.fullName,
+      phone: student.mobileNumber,
+      seat: student.address || "",
+      shift: student.shiftTiming || "Morning",
+      totalFee: student.monthlyFee?.toString() || "1000",
+      paidAmount: student.paidAmount?.toString() || "0"
+    });
+    setIsModalOpen(true);
   };
 
   const handlePrintBill = () => {
@@ -131,7 +151,11 @@ export default function StudentsPage() {
           <p className="text-slate-500 text-sm mt-1">View, search, and manage all registered students.</p>
         </div>
         <button 
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setEditId(null);
+            setFormData({ studentId: "", fullName: "", phone: "", seat: "", shift: "Morning", totalFee: "1000", paidAmount: "1000" });
+            setIsModalOpen(true);
+          }}
           className="bg-brand-blue hover:bg-brand-blue-light text-white px-5 py-2.5 rounded-xl font-medium transition-colors flex items-center shadow-md"
         >
           <Plus className="w-5 h-5 mr-2" /> Add New Student
@@ -149,7 +173,7 @@ export default function StudentsPage() {
               className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden"
             >
               <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                <h3 className="text-xl font-bold text-brand-blue">Add New Student</h3>
+                <h3 className="text-xl font-bold text-brand-blue">{editId ? "Edit Student Details" : "Add New Student"}</h3>
                 <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-red-500 transition-colors">
                   <X className="w-6 h-6" />
                 </button>
@@ -351,7 +375,7 @@ export default function StudentsPage() {
                         <button onClick={() => handleResetPassword(student._id)} className="p-2 text-brand-gold hover:bg-yellow-50 rounded-lg transition-colors" title="Reset Password">
                           <Key className="w-4 h-4" />
                         </button>
-                        <button onClick={() => alert("Edit feature coming soon!")} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
+                        <button onClick={() => handleEditClick(student)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
                           <Edit className="w-4 h-4" />
                         </button>
                         <button onClick={() => handleDeleteStudent(student._id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">

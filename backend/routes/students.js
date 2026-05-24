@@ -62,6 +62,40 @@ router.get('/', async (req, res) => {
   }
 });
 
+// @route PUT /api/students/:id
+// @desc Update an existing student
+router.put('/:id', async (req, res) => {
+  try {
+    const { studentId, fullName, phone, seat, shift, totalFee, paidAmount } = req.body;
+    const student = await Student.findById(req.params.id);
+    if (!student) return res.status(404).json({ msg: 'Student not found' });
+
+    // Update Seat if changed
+    if (student.address !== seat) {
+      if (student.address) {
+        await Seat.findOneAndUpdate({ seatNumber: student.address }, { status: 'Empty', assignedTo: null });
+      }
+      if (seat) {
+        await Seat.findOneAndUpdate({ seatNumber: seat }, { status: 'Occupied', assignedTo: student._id });
+      }
+    }
+
+    student.studentId = studentId || student.studentId;
+    student.fullName = fullName || student.fullName;
+    student.mobileNumber = phone || student.mobileNumber;
+    student.address = seat || student.address;
+    student.shiftTiming = shift || student.shiftTiming;
+    student.monthlyFee = totalFee !== undefined ? totalFee : student.monthlyFee;
+    student.paidAmount = paidAmount !== undefined ? paidAmount : student.paidAmount;
+
+    await student.save();
+    res.json(student);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 // @route DELETE /api/students/:id
 // @desc Delete a student
 router.delete('/:id', async (req, res) => {
