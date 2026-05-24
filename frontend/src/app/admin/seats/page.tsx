@@ -88,7 +88,7 @@ export default function SeatsPage() {
                   <input type="text" required value={newSeat.seatNumber} onChange={(e) => setNewSeat({...newSeat, seatNumber: e.target.value})} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" placeholder="e.g. A-1" />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-sm font-medium text-slate-700">Floor</label>
+                  <label className="text-sm font-medium text-slate-700">Room Number</label>
                   <input type="number" required min="1" value={newSeat.floorNumber} onChange={(e) => setNewSeat({...newSeat, floorNumber: Number(e.target.value)})} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" />
                 </div>
                 <div className="space-y-1">
@@ -120,7 +120,7 @@ export default function SeatsPage() {
             <div key={floor} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
               <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
                 <span className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-brand-blue">{floor}</span>
-                Floor {floor}
+                Room Number {floor}
               </h3>
               
               <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
