@@ -536,7 +536,7 @@ export default function StudentsPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <div className="flex justify-end gap-2 transition-opacity">
+                      <div className="flex justify-end gap-2">
                         <button onClick={() => handleShowReceipt(student)} className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors" title="View Receipt">
                           <FileText className="w-4 h-4" />
                         </button>
@@ -550,9 +550,6 @@ export default function StudentsPage() {
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
-                      <button className="p-2 text-slate-400 group-hover:hidden">
-                        <MoreVertical className="w-4 h-4" />
-                      </button>
                     </td>
                   </motion.tr>
                 ))}
