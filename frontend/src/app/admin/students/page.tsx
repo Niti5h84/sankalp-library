@@ -71,47 +71,12 @@ export default function StudentsPage() {
     window.print();
   };
 
-  const handleWhatsAppShare = async () => {
+  const handleWhatsAppShare = () => {
     if (!billData) return;
-    
-    const element = document.getElementById("printable-bill");
-    if (!element) return;
-
-    try {
-      const canvas = await html2canvas(element, { scale: 2 }); // High quality
-      canvas.toBlob(async (blob) => {
-        if (!blob) return;
-        
-        const file = new File([blob], `Receipt_${billData.studentId}.png`, { type: "image/png" });
-        
-        // Check if Web Share API is available and supports files (mostly on mobile)
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            files: [file],
-            title: "Sankalp Library Receipt",
-            text: `Receipt for ${billData.fullName}`
-          });
-        } else {
-          // Fallback for Desktop: Download image and open WhatsApp web
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `Receipt_${billData.studentId}.png`;
-          a.click();
-          URL.revokeObjectURL(url);
-          
-          alert("रसीद की फ़ोटो आपके डिवाइस में सेव हो गई है! अब WhatsApp खुलेगा, वहां आप इस फ़ोटो को अटैच (Attach) करके भेज सकते हैं।");
-          
-          const dueAmount = Number(billData.totalFee) - Number(billData.paidAmount);
-          const message = `*Sankalp Library - Admission Receipt* 📚\n\n*Name:* ${billData.fullName}\n*Student ID:* ${billData.studentId}\n*Date:* ${billData.date}\n\n*Total Fee:* ₹${billData.totalFee}\n*Paid:* ₹${billData.paidAmount}\n*Due:* ₹${dueAmount}\n\n(Please find the attached receipt image)`;
-          const encodedMessage = encodeURIComponent(message);
-          window.open(`https://wa.me/91${billData.phone}?text=${encodedMessage}`, "_blank");
-        }
-      }, "image/png");
-    } catch (error) {
-      console.error("Error generating receipt image:", error);
-      alert("रसीद की फ़ोटो बनाने में कोई दिक्कत आई। कृपया दोबारा कोशिश करें या Print दबाकर PDF सेव कर लें।");
-    }
+    const dueAmount = Number(billData.totalFee) - Number(billData.paidAmount);
+    const message = `*Sankalp Library - Admission Receipt* 📚\n\n*Name:* ${billData.fullName}\n*Student ID:* ${billData.studentId}\n*Date:* ${billData.date}\n\n*Seat:* ${billData.seat} (${billData.shift})\n*Total Fee:* ₹${billData.totalFee}\n*Paid:* ₹${billData.paidAmount}\n*Due:* ₹${dueAmount}\n\nThank you for joining Sankalp Library!`;
+    const encodedMessage = encodeURIComponent(message);
+    window.open(`https://wa.me/91${billData.phone}?text=${encodedMessage}`, "_blank");
   };
 
   const handleDeleteStudent = async (id: string) => {
@@ -379,7 +344,7 @@ export default function StudentsPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex justify-end gap-2 transition-opacity">
                         <button onClick={() => handleShowReceipt(student)} className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors" title="View Receipt">
                           <FileText className="w-4 h-4" />
                         </button>
