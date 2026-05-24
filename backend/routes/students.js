@@ -9,7 +9,7 @@ const Attendance = require('../models/Attendance');
 // @desc Add a new student
 router.post('/', async (req, res) => {
   try {
-    const { studentId, fullName, phone, seat, shift, totalFee, paidAmount } = req.body;
+    const { studentId, fullName, phone, seat, shift, totalFee, paidAmount, feeMonth } = req.body;
     
     // Hash default password (using phone number or default string)
     const salt = await bcrypt.genSalt(10);
@@ -28,6 +28,7 @@ router.post('/', async (req, res) => {
       address: seat, 
       shiftTiming: shift,
       monthlyFee: totalFee || 1000, // Use provided totalFee or default
+      feeMonth: feeMonth || "",
       paidAmount: paidAmount || 0,
       feeExpiryDate,
       password: hashedPassword
@@ -66,7 +67,7 @@ router.get('/', async (req, res) => {
 // @desc Update an existing student
 router.put('/:id', async (req, res) => {
   try {
-    const { studentId, fullName, phone, seat, shift, totalFee, paidAmount } = req.body;
+    const { studentId, fullName, phone, seat, shift, totalFee, paidAmount, feeMonth } = req.body;
     const student = await Student.findById(req.params.id);
     if (!student) return res.status(404).json({ msg: 'Student not found' });
 
@@ -87,6 +88,7 @@ router.put('/:id', async (req, res) => {
     student.shiftTiming = shift || student.shiftTiming;
     student.monthlyFee = totalFee !== undefined ? totalFee : student.monthlyFee;
     student.paidAmount = paidAmount !== undefined ? paidAmount : student.paidAmount;
+    student.feeMonth = feeMonth !== undefined ? feeMonth : student.feeMonth;
 
     await student.save();
     res.json(student);

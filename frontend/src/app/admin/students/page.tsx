@@ -21,7 +21,8 @@ export default function StudentsPage() {
     seat: "",
     shift: "Morning",
     totalFee: "1000",
-    paidAmount: "1000"
+    paidAmount: "1000",
+    feeMonth: "January"
   });
 
   // Bill Modal State
@@ -63,7 +64,7 @@ export default function StudentsPage() {
       setIsModalOpen(false);
       setShowBillModal(true);
       
-      setFormData({ studentId: "", fullName: "", phone: "", seat: "", shift: "Morning", totalFee: "1000", paidAmount: "1000" });
+      setFormData({ studentId: "", fullName: "", phone: "", seat: "", shift: "Morning", totalFee: "1000", paidAmount: "1000", feeMonth: "January" });
       setEditId(null);
     } catch (err) {
       console.error("Failed to save student", err);
@@ -82,7 +83,8 @@ export default function StudentsPage() {
       seat: student.address || "",
       shift: student.shiftTiming || "Morning",
       totalFee: student.monthlyFee?.toString() || "1000",
-      paidAmount: student.paidAmount?.toString() || "0"
+      paidAmount: student.paidAmount?.toString() || "0",
+      feeMonth: student.feeMonth || "January"
     });
     setIsModalOpen(true);
   };
@@ -94,7 +96,7 @@ export default function StudentsPage() {
   const handleWhatsAppShare = () => {
     if (!billData) return;
     const dueAmount = Number(billData.totalFee) - Number(billData.paidAmount);
-    const message = `*Sankalp Library - Admission Receipt* 📚\n\n*Name:* ${billData.fullName}\n*Student ID:* ${billData.studentId}\n*Date:* ${billData.date}\n\n*Seat:* ${billData.seat} (${billData.shift})\n*Total Fee:* ₹${billData.totalFee}\n*Paid:* ₹${billData.paidAmount}\n*Due:* ₹${dueAmount}\n\nThank you for joining Sankalp Library!`;
+    const message = `*Sankalp Library - Admission Receipt* 📚\n\n*Name:* ${billData.fullName}\n*Student ID:* ${billData.studentId}\n*Date:* ${billData.date}\n\n*Seat:* ${billData.seat} (${billData.shift})\n*Fee Month:* ${billData.feeMonth}\n*Total Fee:* ₹${billData.totalFee}\n*Paid:* ₹${billData.paidAmount}\n*Due:* ₹${dueAmount}\n\nThank you for joining Sankalp Library!`;
     const encodedMessage = encodeURIComponent(message);
     window.open(`https://wa.me/91${billData.phone}?text=${encodedMessage}`, "_blank");
   };
@@ -133,6 +135,7 @@ export default function StudentsPage() {
       shift: student.shiftTiming,
       totalFee: student.monthlyFee || 1000,
       paidAmount: student.paidAmount || 0,
+      feeMonth: student.feeMonth || "January",
       date: new Date(student.createdAt || new Date()).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
     });
     setShowBillModal(true);
@@ -153,7 +156,7 @@ export default function StudentsPage() {
         <button 
           onClick={() => {
             setEditId(null);
-            setFormData({ studentId: "", fullName: "", phone: "", seat: "", shift: "Morning", totalFee: "1000", paidAmount: "1000" });
+            setFormData({ studentId: "", fullName: "", phone: "", seat: "", shift: "Morning", totalFee: "1000", paidAmount: "1000", feeMonth: "January" });
             setIsModalOpen(true);
           }}
           className="bg-brand-blue hover:bg-brand-blue-light text-white px-5 py-2.5 rounded-xl font-medium transition-colors flex items-center shadow-md"
@@ -209,6 +212,7 @@ export default function StudentsPage() {
                       <option>Night</option>
                     </select>
                   </div>
+                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-slate-700">Total Fee (₹)</label>
                     <input type="number" required value={formData.totalFee} onChange={(e) => setFormData({...formData, totalFee: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" placeholder="1000" />
@@ -217,6 +221,23 @@ export default function StudentsPage() {
                     <label className="text-sm font-medium text-slate-700">Amount Paid (₹)</label>
                     <input type="number" required value={formData.paidAmount} onChange={(e) => setFormData({...formData, paidAmount: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" placeholder="1000" />
                   </div>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-slate-700">Fee Month</label>
+                  <select value={formData.feeMonth} onChange={(e) => setFormData({...formData, feeMonth: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none">
+                    <option>January</option>
+                    <option>February</option>
+                    <option>March</option>
+                    <option>April</option>
+                    <option>May</option>
+                    <option>June</option>
+                    <option>July</option>
+                    <option>August</option>
+                    <option>September</option>
+                    <option>October</option>
+                    <option>November</option>
+                    <option>December</option>
+                  </select>
                 </div>
                 <div className="pt-4 flex justify-end gap-3">
                   <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-slate-600 font-medium hover:bg-slate-100 rounded-lg transition-colors">Cancel</button>
@@ -264,6 +285,10 @@ export default function StudentsPage() {
                   <div className="flex justify-between border-b border-dashed border-slate-300 pb-2">
                     <span className="font-semibold text-slate-600">Seat & Shift:</span>
                     <span className="font-bold">{billData.seat} ({billData.shift})</span>
+                  </div>
+                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2">
+                    <span className="font-semibold text-slate-600">Fee Month:</span>
+                    <span className="font-bold text-brand-blue">{billData.feeMonth}</span>
                   </div>
                   <div className="flex justify-between border-b border-dashed border-slate-300 pb-2">
                     <span className="font-semibold text-slate-600">Total Fee:</span>
