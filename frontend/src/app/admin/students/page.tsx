@@ -277,65 +277,65 @@ export default function StudentsPage() {
               className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden print:shadow-none print:w-full print:max-w-none print:rounded-none"
             >
               {/* Printable Area */}
-              <div id="printable-bill" className="p-8 pb-4">
-                <div className="text-center border-b-2 border-slate-800 pb-4 mb-6">
-                  <h1 className="text-3xl font-extrabold tracking-tight text-brand-blue uppercase">Sankalp Library</h1>
-                  <p className="text-slate-600 mt-1 font-medium">पता- हाईस्कूल के नजदीक, आवापुर</p>
-                  <p className="text-slate-600 font-semibold mb-2">Mob: 8271925247</p>
-                  <p className="text-slate-500 text-sm mt-1">Receipt No: #{Math.floor(10000 + Math.random() * 90000)} | Date: {billData.date}</p>
+              <div id="printable-bill" className="p-8 pb-4 print:w-[105mm] print:h-[148mm] print:p-3 print:mx-auto print:border print:border-dashed print:border-slate-300 print:overflow-hidden print:flex print:flex-col print:justify-between print:bg-white text-slate-800">
+                <div className="text-center border-b-2 border-slate-800 pb-4 mb-6 print:pb-2 print:mb-3">
+                  <h1 className="text-3xl font-extrabold tracking-tight text-brand-blue uppercase print:text-lg print:text-black">Sankalp Library</h1>
+                  <p className="text-slate-600 mt-1 font-medium print:text-[10px] print:mt-0 print:text-black">पता- हाईस्कूल के नजदीक, आवापुर</p>
+                  <p className="text-slate-600 font-semibold mb-2 print:text-[10px] print:mb-1 print:text-black">Mob: 8271925247</p>
+                  <p className="text-slate-500 text-sm mt-1 print:text-[9px] print:mt-0 print:text-slate-600">Receipt No: #{Math.floor(10000 + Math.random() * 90000)} | Date: {billData.date}</p>
                 </div>
 
-                <div className="space-y-4 text-slate-800 text-sm sm:text-base">
-                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2">
-                    <span className="font-semibold text-slate-600">Student Name:</span>
-                    <span className="font-bold">{billData.fullName}</span>
+                <div className="space-y-4 text-slate-800 text-sm sm:text-base print:space-y-1.5 print:text-[11px]">
+                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2 print:pb-1">
+                    <span className="font-semibold text-slate-600 print:text-slate-800">Student Name:</span>
+                    <span className="font-bold print:text-black">{billData.fullName}</span>
                   </div>
-                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2">
-                    <span className="font-semibold text-slate-600">Student ID:</span>
-                    <span className="font-bold">{billData.studentId}</span>
+                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2 print:pb-1">
+                    <span className="font-semibold text-slate-600 print:text-slate-800">Student ID:</span>
+                    <span className="font-bold print:text-black">{billData.studentId}</span>
                   </div>
-                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2">
-                    <span className="font-semibold text-slate-600">Mobile No:</span>
-                    <span className="font-bold">{billData.phone}</span>
+                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2 print:pb-1">
+                    <span className="font-semibold text-slate-600 print:text-slate-800">Mobile No:</span>
+                    <span className="font-bold print:text-black">{billData.phone}</span>
                   </div>
-                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2">
-                    <span className="font-semibold text-slate-600">Seat & Shift:</span>
-                    <span className="font-bold">{billData.seat} ({billData.shift})</span>
+                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2 print:pb-1">
+                    <span className="font-semibold text-slate-600 print:text-slate-800">Seat & Shift:</span>
+                    <span className="font-bold print:text-black">{billData.seat} ({billData.shift})</span>
                   </div>
-                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2">
-                    <span className="font-semibold text-slate-600">Fee Month:</span>
-                    <span className="font-bold text-brand-blue">{billData.feeMonth}</span>
+                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2 print:pb-1">
+                    <span className="font-semibold text-slate-600 print:text-slate-800">Fee Month:</span>
+                    <span className="font-bold text-brand-blue print:text-black">{billData.feeMonth}</span>
                   </div>
-                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2">
-                    <span className="font-semibold text-slate-600">Total Fee:</span>
-                    <span className="font-bold">₹ {billData.totalFee}</span>
+                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2 print:pb-1">
+                    <span className="font-semibold text-slate-600 print:text-slate-800">Total Fee:</span>
+                    <span className="font-bold print:text-black">₹ {billData.totalFee}</span>
                   </div>
-                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2 text-green-700">
+                  <div className="flex justify-between border-b border-dashed border-slate-300 pb-2 text-green-700 print:pb-1 print:text-black">
                     <span className="font-semibold">Amount Paid:</span>
                     <span className="font-bold">₹ {billData.paidAmount}</span>
                   </div>
-                  <div className="flex justify-between pt-1 text-red-600 mb-4">
+                  <div className="flex justify-between pt-1 text-red-600 mb-4 print:mb-1 print:pt-0 print:text-black">
                     <span className="font-semibold">Due Amount:</span>
-                    <span className="font-bold text-lg">₹ {Number(billData.totalFee) - Number(billData.paidAmount)}</span>
+                    <span className="font-bold text-lg print:text-sm">₹ {Number(billData.totalFee) - Number(billData.paidAmount)}</span>
                   </div>
 
-                  <div className="mt-8 pt-6 flex justify-between items-end text-sm text-slate-800 font-medium">
+                  <div className="mt-8 pt-6 flex justify-between items-end text-sm text-slate-800 font-medium print:mt-4 print:pt-3 print:text-[10px]">
                     <div className="text-center">
-                      <div className="w-28 border-b-2 border-slate-400 mb-1"></div>
+                      <div className="w-28 border-b-2 border-slate-400 mb-1 print:w-20 print:border-black"></div>
                       Student's Sign.
                     </div>
                     <div className="text-center">
-                      <div className="w-28 border-b-2 border-slate-400 mb-1"></div>
+                      <div className="w-28 border-b-2 border-slate-400 mb-1 print:w-20 print:border-black"></div>
                       Authorised Signature
                     </div>
                   </div>
 
-                  <div className="mt-6 text-center text-xs md:text-sm text-red-600 font-bold bg-red-50 p-2.5 rounded border border-red-100">
+                  <div className="mt-6 text-center text-xs md:text-sm text-red-600 font-bold bg-red-50 p-2.5 rounded border border-red-100 print:mt-3 print:p-1.5 print:text-[9px] print:bg-white print:border-black print:text-black">
                     नोट - प्रत्येक माह में 5 दिन के अंदर पेमेंट करना अनिवार्य है।
                   </div>
                 </div>
 
-                <div className="mt-10 pt-4 border-t border-slate-200 text-center text-xs text-slate-500 space-y-1 print:block">
+                <div className="mt-10 pt-4 border-t border-slate-200 text-center text-xs text-slate-500 space-y-1 print:mt-2 print:pt-2 print:text-[8px] print:border-black print:text-black">
                   <p>Thank you for choosing Sankalp Library!</p>
                   <p className="font-semibold">Note: Fees once paid are strictly non-refundable.</p>
                 </div>
