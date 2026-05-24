@@ -9,6 +9,7 @@ import html2canvas from "html2canvas";
 export default function StudentsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [students, setStudents] = useState<any[]>([]);
+  const [availableSeats, setAvailableSeats] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -41,8 +42,18 @@ export default function StudentsPage() {
     }
   };
 
+  const fetchSeats = async () => {
+    try {
+      const res = await axios.get("https://sankalp-library.onrender.com/api/seats");
+      setAvailableSeats(res.data);
+    } catch (err) {
+      console.error("Failed to fetch seats", err);
+    }
+  };
+
   useEffect(() => {
     fetchStudents();
+    fetchSeats();
   }, []);
 
   const handleAddStudent = async (e: React.FormEvent) => {
@@ -199,7 +210,14 @@ export default function StudentsPage() {
                   </div>
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-slate-700">Assigned Seat</label>
-                    <input type="text" required value={formData.seat} onChange={(e) => setFormData({...formData, seat: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" placeholder="e.g. A-12" />
+                    <select required value={formData.seat} onChange={(e) => setFormData({...formData, seat: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none">
+                      <option value="">-- Select Seat --</option>
+                      {availableSeats.map(seat => (
+                        <option key={seat._id} value={seat.seatNumber}>
+                          {seat.seatNumber} ({seat.status})
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-4">
