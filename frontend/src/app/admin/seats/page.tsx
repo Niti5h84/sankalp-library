@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, CheckCircle2, User, Loader2, X, Trash2, Armchair } from "lucide-react";
+import { Plus, CheckCircle2, User, Loader2, X, Trash2, Armchair, Edit } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 
@@ -11,6 +11,7 @@ export default function SeatsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newSeat, setNewSeat] = useState({ seatNumber: "", floorNumber: 1, seatType: "Normal" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editSeatId, setEditSeatId] = useState<string | null>(null);
 
   const fetchSeats = async () => {
     try {
@@ -32,10 +33,15 @@ export default function SeatsPage() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await axios.post("https://sankalp-library.onrender.com/api/seats", newSeat);
+      if (editSeatId) {
+        await axios.put(`https://sankalp-library.onrender.com/api/seats/${editSeatId}`, newSeat);
+      } else {
+        await axios.post("https://sankalp-library.onrender.com/api/seats", newSeat);
+      }
       await fetchSeats();
       setIsModalOpen(false);
       setNewSeat({ seatNumber: "", floorNumber: 1, seatType: "Normal" });
+      setEditSeatId(null);
     } catch (err) {
       console.error(err);
       alert("Failed to add seat. Seat number might already exist.");
@@ -55,6 +61,12 @@ export default function SeatsPage() {
   };
 
   const floors = Array.from(new Set(seats.map(s => s.floorNumber))).sort((a,b) => a - b);
+
+  const openEditModal = (seat: any) => {
+    setEditSeatId(seat._id);
+    setNewSeat({ seatNumber: seat.seatNumber, floorNumber: seat.floorNumber, seatType: seat.seatType });
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="space-y-6">
@@ -79,8 +91,8 @@ export default function SeatsPage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden">
               <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                <h3 className="font-bold text-brand-blue">Add New Seat</h3>
-                <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-red-500"><X className="w-5 h-5" /></button>
+                <h3 className="font-bold text-brand-blue">{editSeatId ? "Edit Seat" : "Add New Seat"}</h3>
+                <button onClick={() => { setIsModalOpen(false); setEditSeatId(null); setNewSeat({ seatNumber: "", floorNumber: 1, seatType: "Normal" }); }} className="text-slate-400 hover:text-red-500"><X className="w-5 h-5" /></button>
               </div>
               <form onSubmit={handleAddSeat} className="p-5 space-y-4">
                 <div className="space-y-1">
@@ -160,9 +172,14 @@ export default function SeatsPage() {
                          {seat.seatType}
                       </div>
                       
-                      <button onClick={(e) => { e.stopPropagation(); handleDeleteSeat(seat._id); }} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-all hover:scale-110 shadow-md">
-                         <Trash2 className="w-3 h-3" />
-                      </button>
+                      <div className="absolute -top-2 -right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                        <button onClick={(e) => { e.stopPropagation(); openEditModal(seat); }} className="bg-blue-500 text-white rounded-full p-1.5 hover:scale-110 shadow-md">
+                           <Edit className="w-3 h-3" />
+                        </button>
+                        <button onClick={(e) => { e.stopPropagation(); handleDeleteSeat(seat._id); }} className="bg-red-500 text-white rounded-full p-1.5 hover:scale-110 shadow-md">
+                           <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
                     </motion.div>
                   );
                 })}

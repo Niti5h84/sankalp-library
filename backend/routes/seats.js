@@ -31,6 +31,39 @@ router.post('/', async (req, res) => {
   }
 });
 
+// @route PUT /api/seats/:id
+// @desc Update an existing seat
+router.put('/:id', async (req, res) => {
+  try {
+    const { seatNumber, floorNumber, seatType } = req.body;
+    const seat = await Seat.findById(req.params.id);
+    if (!seat) return res.status(404).json({ msg: 'Seat not found' });
+
+    // Ensure new seatNumber doesn't conflict with another seat
+    if (seatNumber && seatNumber !== seat.seatNumber) {
+      const existing = await Seat.findOne({ seatNumber });
+      if (existing) return res.status(400).json({ msg: 'Seat number already in use' });
+      
+      // If a student is assigned to this seat, update their address field
+      if (seat.assignedTo) {
+        const Student = require('../models/Student');
+        await Student.updateOne({ _id: seat.assignedTo }, { address: seatNumber });
+      }
+      
+      seat.seatNumber = seatNumber;
+    }
+
+    if (floorNumber !== undefined) seat.floorNumber = floorNumber;
+    if (seatType) seat.seatType = seatType;
+
+    await seat.save();
+    res.json(seat);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 // @route DELETE /api/seats/:id
 // @desc Delete a seat
 router.delete('/:id', async (req, res) => {
