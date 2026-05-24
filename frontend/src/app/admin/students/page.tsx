@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Plus, Filter, MoreVertical, Edit, Trash2, X, Loader2, Key } from "lucide-react";
+import { Search, Plus, Filter, MoreVertical, Edit, Trash2, X, Loader2, Key, FileText } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import html2canvas from "html2canvas";
@@ -137,6 +137,20 @@ export default function StudentsPage() {
       console.error(err);
       alert("Failed to reset password.");
     }
+  };
+
+  const handleShowReceipt = (student: any) => {
+    setBillData({
+      fullName: student.fullName,
+      studentId: student.studentId,
+      phone: student.mobileNumber,
+      seat: student.address,
+      shift: student.shiftTiming,
+      totalFee: student.monthlyFee || 1000,
+      paidAmount: student.paidAmount || 0,
+      date: new Date(student.createdAt || new Date()).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+    });
+    setShowBillModal(true);
   };
 
   const filteredStudents = students.filter(s => 
@@ -366,6 +380,9 @@ export default function StudentsPage() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onClick={() => handleShowReceipt(student)} className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors" title="View Receipt">
+                          <FileText className="w-4 h-4" />
+                        </button>
                         <button onClick={() => handleResetPassword(student._id)} className="p-2 text-brand-gold hover:bg-yellow-50 rounded-lg transition-colors" title="Reset Password">
                           <Key className="w-4 h-4" />
                         </button>
