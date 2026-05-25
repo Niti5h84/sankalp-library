@@ -61,6 +61,8 @@ export default function SeatsPage() {
   };
 
   const floors = Array.from(new Set(seats.map(s => s.floorNumber))).sort((a,b) => a - b);
+  const occupiedCount = seats.filter(s => s.status === 'Occupied').length;
+  const emptyCount = seats.length - occupiedCount; // Assuming Empty or Reserved are considered empty, or specifically: seats.filter(s => s.status !== 'Occupied').length; Actually, let's just use filter
 
   const openEditModal = (seat: any) => {
     setEditSeatId(seat._id);
@@ -77,8 +79,8 @@ export default function SeatsPage() {
         </div>
         <div className="flex gap-4 items-center">
           <div className="flex gap-4 text-sm font-medium bg-white px-4 py-2 rounded-xl border border-slate-100 shadow-sm">
-            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-green-500"></div><span>Occupied</span></div>
-            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-slate-200 border border-slate-300"></div><span>Empty</span></div>
+            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-green-500"></div><span>Occupied ({occupiedCount})</span></div>
+            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-slate-200 border border-slate-300"></div><span>Empty ({seats.filter(s => s.status !== 'Occupied').length})</span></div>
           </div>
           <button onClick={() => setIsModalOpen(true)} className="bg-brand-blue hover:bg-brand-blue-light text-white px-5 py-2.5 rounded-xl font-medium transition-colors flex items-center shadow-md">
             <Plus className="w-5 h-5 mr-2" /> Add Seat
