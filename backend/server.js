@@ -13,7 +13,15 @@ app.use(express.json());
 
 // Database Connection
 mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/sankalp-library')
-  .then(() => console.log('MongoDB Connected successfully!'))
+  .then(async () => {
+    console.log('MongoDB Connected successfully!');
+    try {
+      await mongoose.connection.collection('students').dropIndex('studentId_1');
+      console.log('Dropped studentId_1 index successfully.');
+    } catch (e) {
+      console.log('Index drop ignored/failed:', e.message);
+    }
+  })
   .catch(err => console.error('MongoDB connection error:', err));
 
 // Routes
