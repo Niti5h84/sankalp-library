@@ -8,6 +8,7 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 const sidebarLinks = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -28,6 +29,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [adminUser, setAdminUser] = useState({ name: "Admin", email: "admin@sankalp.com", initial: "A" });
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [dueStudents, setDueStudents] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchDues = async () => {
+      try {
+        const res = await axios.get("https://sankalp-library.onrender.com/api/students");
+        const today = new Date();
+        const dues = res.data.filter((s: any) => {
+          const isExpired = new Date(s.feeExpiryDate) < today;
+          const isPartial = Number(s.paidAmount) < Number(s.monthlyFee);
+          return isExpired || isPartial;
+        });
+        setDueStudents(dues);
+      } catch (e) {}
+    };
+    fetchDues();
+  }, [pathname]);
 
   useEffect(() => {
     const data = localStorage.getItem("adminData");
@@ -126,11 +145,57 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </h1>
           </div>
           
-          <div className="flex items-center space-x-6">
-            <button className="relative text-slate-400 hover:text-brand-blue transition-colors">
+          <div className="flex items-center space-x-6 relative">
+            <button onClick={() => setNotificationsOpen(!notificationsOpen)} className="relative text-slate-400 hover:text-brand-blue transition-colors">
               <Bell size={24} />
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
+              {dueStudents.length > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white flex items-center justify-center text-[9px] text-white font-bold">
+                  {dueStudents.length > 9 ? '9+' : dueStudents.length}
+                </span>
+              )}
             </button>
+
+            {/* Notifications Dropdown */}
+            {notificationsOpen && (
+              <div className="absolute top-10 right-16 w-80 bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 z-50 max-h-96 flex flex-col overflow-hidden">
+                <div className="px-4 py-3 border-b border-slate-100 bg-slate-50 flex justify-between items-center shrink-0">
+                  <h3 className="font-bold text-slate-800 text-sm">Fee Dues Alerts</h3>
+                  <span className="bg-red-100 text-red-600 text-xs font-bold px-2 py-0.5 rounded-full">{dueStudents.length} Pending</span>
+                </div>
+                <div className="overflow-y-auto custom-scrollbar flex-1">
+                  {dueStudents.length === 0 ? (
+                    <div className="p-6 text-center text-slate-500 text-sm">No pending dues! 🎉</div>
+                  ) : (
+                    dueStudents.map(student => {
+                      const isExpired = new Date(student.feeExpiryDate) < new Date();
+                      const dueAmount = Number(student.monthlyFee) - Number(student.paidAmount);
+                      
+                      return (
+                        <div key={student._id} className="px-4 py-3 border-b border-slate-50 hover:bg-slate-50 transition-colors flex items-start gap-3 cursor-pointer" onClick={() => { setNotificationsOpen(false); router.push('/admin/fees'); }}>
+                          <div className="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                            {student.fullName.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold text-slate-800 leading-tight">{student.fullName}</p>
+                            <p className="text-xs text-slate-500 mt-0.5">
+                              {isExpired 
+                                ? `Fee Expired on ${new Date(student.feeExpiryDate).toLocaleDateString('en-IN', {day:'numeric', month:'short'})}` 
+                                : `₹${dueAmount} Pending`}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+                <div className="p-2 border-t border-slate-100 shrink-0">
+                  <button onClick={() => { setNotificationsOpen(false); router.push('/admin/fees'); }} className="w-full py-2 text-xs font-bold text-brand-blue hover:bg-blue-50 rounded-lg transition-colors">
+                    View All Fees
+                  </button>
+                </div>
+              </div>
+            )}
+
             <div className="relative">
               <div 
                 onClick={() => setProfileOpen(!profileOpen)}
