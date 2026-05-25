@@ -10,6 +10,7 @@ export default function AttendancePage() {
   const [students, setStudents] = useState<any[]>([]);
   const [attendance, setAttendance] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [attendanceModal, setAttendanceModal] = useState<{isOpen: boolean, student: any, day: number, dateStr: string} | null>(null);
 
   const fetchStudents = async () => {
     try {
@@ -50,14 +51,16 @@ export default function AttendancePage() {
 
   const markAttendance = async (studentId: string, day: number, status: string) => {
     const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+    const correctDateStr = new Date(targetDate.getTime() - (targetDate.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
     try {
       await axios.post("https://sankalp-library.onrender.com/api/attendance", {
         studentId,
-        date: targetDate.toISOString(),
+        date: correctDateStr,
         status
       });
       // Refresh attendance
       fetchAttendance();
+      setAttendanceModal(null);
     } catch (err) {
       console.error("Failed to mark attendance", err);
     }
@@ -140,12 +143,14 @@ export default function AttendancePage() {
                         <td key={day} className={`px-1 py-3 text-center border-r border-slate-50 last:border-0 relative ${isPastDate ? 'cursor-not-allowed opacity-80 bg-slate-50/50' : 'group cursor-pointer'}`}
                             onClick={() => {
                               if (isPastDate) return; // Prevent filling back dates
-                              // Toggle logic: None -> Present -> Absent -> Leave -> None
-                              let nextStatus = 'Present';
-                              if (record?.status === 'Present') nextStatus = 'Absent';
-                              else if (record?.status === 'Absent') nextStatus = 'Leave';
-                              else if (record?.status === 'Leave') nextStatus = 'Present';
-                              markAttendance(student._id, day, nextStatus);
+                              if (record) return; // Prevent changing after marked
+                              
+                              setAttendanceModal({
+                                isOpen: true,
+                                student: student,
+                                day: day,
+                                dateStr: targetDateStr
+                              });
                             }}
                         >
                           <div className={`flex justify-center items-center w-8 h-8 rounded-lg mx-auto ${!isPastDate ? 'group-hover:bg-slate-100 transition-colors' : ''}`}>
@@ -165,7 +170,6 @@ export default function AttendancePage() {
         )}
       </div>
 
-      {/* Legend */}
       <div className="flex items-center gap-6 px-4">
          <div className="flex items-center gap-2 text-sm text-slate-600"><Check className="w-4 h-4 text-green-500" /> Present</div>
          <div className="flex items-center gap-2 text-sm text-slate-600"><X className="w-4 h-4 text-red-500" /> Absent</div>
@@ -173,6 +177,56 @@ export default function AttendancePage() {
          <div className="flex items-center gap-2 text-sm text-slate-600"><Circle className="w-4 h-4 text-slate-200" /> Unmarked</div>
          <div className="flex items-center gap-2 text-sm text-slate-600"><div className="w-2.5 h-2.5 rounded-full bg-slate-800 ml-1"></div> <span className="ml-0.5">Locked</span></div>
       </div>
+
+      {/* Attendance Selection Modal */}
+      {attendanceModal?.isOpen && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-slate-800">Mark Attendance</h3>
+              <button onClick={() => setAttendanceModal(null)} className="text-slate-400 hover:text-slate-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="mb-6 space-y-2">
+              <p className="text-slate-600"><span className="font-semibold text-slate-800">Student:</span> {attendanceModal.student.fullName}</p>
+              <p className="text-slate-600"><span className="font-semibold text-slate-800">Date:</span> {attendanceModal.day} {currentDate.toLocaleString('default', { month: 'long' })} {year}</p>
+              <p className="text-amber-600 text-sm mt-2 font-medium">Note: Once marked, attendance cannot be changed.</p>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3">
+              <button 
+                onClick={() => markAttendance(attendanceModal.student._id, attendanceModal.day, 'Present')}
+                className="flex flex-col items-center justify-center p-3 rounded-xl border-2 border-green-100 hover:border-green-500 hover:bg-green-50 transition-colors"
+              >
+                <Check className="w-6 h-6 text-green-500 mb-2" />
+                <span className="font-medium text-slate-700">Present (P)</span>
+              </button>
+              
+              <button 
+                onClick={() => markAttendance(attendanceModal.student._id, attendanceModal.day, 'Absent')}
+                className="flex flex-col items-center justify-center p-3 rounded-xl border-2 border-red-100 hover:border-red-500 hover:bg-red-50 transition-colors"
+              >
+                <X className="w-6 h-6 text-red-500 mb-2" />
+                <span className="font-medium text-slate-700">Absent (A)</span>
+              </button>
+
+              <button 
+                onClick={() => markAttendance(attendanceModal.student._id, attendanceModal.day, 'Leave')}
+                className="flex flex-col items-center justify-center p-3 rounded-xl border-2 border-brand-gold/20 hover:border-brand-gold hover:bg-brand-gold/10 transition-colors"
+              >
+                <span className="font-bold text-xl text-brand-gold mb-1">L</span>
+                <span className="font-medium text-slate-700">Leave (L)</span>
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }
