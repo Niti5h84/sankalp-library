@@ -7,7 +7,8 @@ const adminSchema = new mongoose.Schema({
   role: { type: String, default: 'Admin' },
   securityPin: { type: String, default: '' },
   securityQuestion: { type: String, default: '' },
-  securityAnswer: { type: String, default: '' }
+  securityAnswer: { type: String, default: '' },
+  pushSubscriptions: { type: Array, default: [] }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Admin', adminSchema);

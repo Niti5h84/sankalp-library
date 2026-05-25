@@ -22,6 +22,9 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} h-full antialiased dark`}
     >
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+      </head>
       <body className="min-h-full flex flex-col font-sans bg-background text-foreground">{children}</body>
     </html>
   );

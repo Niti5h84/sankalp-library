@@ -48,6 +48,54 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     fetchDues();
   }, [pathname]);
 
+  const VAPID_PUBLIC_KEY = "BFbGamOTican6hGse9lVbFgKpLosHybPs_F1PqmyTyfK8TzOKscFAr4TA3dLc096A4ALVv8Fz9qBZL-wXQdHkcY";
+
+  function urlBase64ToUint8Array(base64String: string) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+      .replace(/\-/g, '+')
+      .replace(/_/g, '/');
+  
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+  
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  }
+
+  useEffect(() => {
+    const setupNotifications = async () => {
+      if ('serviceWorker' in navigator && 'PushManager' in window) {
+        try {
+          const registration = await navigator.serviceWorker.register('/sw.js');
+          
+          let subscription = await registration.pushManager.getSubscription();
+          if (!subscription) {
+            subscription = await registration.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+            });
+          }
+          
+          if (adminUser.email) {
+            await axios.post('https://sankalp-library.onrender.com/api/notifications/subscribe', {
+              subscription,
+              adminEmail: adminUser.email
+            });
+          }
+        } catch (error) {
+          console.error('Service Worker Error', error);
+        }
+      }
+    };
+
+    if (adminUser.email && adminUser.email !== "admin@sankalp.com") {
+      setupNotifications();
+    }
+  }, [adminUser.email]);
+
   useEffect(() => {
     const data = localStorage.getItem("adminData");
     if (data) {

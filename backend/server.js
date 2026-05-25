@@ -22,6 +22,10 @@ app.use('/api/students', require('./routes/students'));
 app.use('/api/seats', require('./routes/seats'));
 app.use('/api/attendance', require('./routes/attendance'));
 app.use('/api/shifts', require('./routes/shifts'));
+app.use('/api/notifications', require('./routes/notifications'));
+
+// Initialize Cron Jobs
+require('./cron');
 
 // Basic API Route
 app.get('/api/health', (req, res) => {
