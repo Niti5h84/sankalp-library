@@ -96,7 +96,7 @@ export default function AttendancePage() {
             <table className="w-full text-sm text-left">
               <thead className="text-xs text-slate-500 uppercase bg-slate-50">
                 <tr>
-                  <th className="px-6 py-4 font-bold rounded-tl-xl sticky left-0 bg-slate-50 z-10 w-64 border-r border-slate-200">Student Name</th>
+                  <th className="px-6 py-4 font-bold rounded-tl-xl sticky left-0 bg-slate-50 z-20 w-64 border-r border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">Student Name</th>
                   {daysArray.map(day => (
                     <th key={day} className="px-2 py-4 font-bold text-center min-w-[40px] border-b border-slate-200">
                       {day}
@@ -107,7 +107,7 @@ export default function AttendancePage() {
               <tbody>
                 {students.map((student, idx) => (
                   <motion.tr key={student._id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: idx * 0.05 }} className="border-b border-slate-50 hover:bg-slate-50/50">
-                    <td className="px-6 py-3 font-medium text-slate-800 sticky left-0 bg-white border-r border-slate-100">
+                    <td className="px-6 py-3 font-medium text-slate-800 sticky left-0 bg-white border-r border-slate-100 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
                       <div>{student.fullName}</div>
                       <div className="text-xs text-slate-400 font-normal">{student.studentId}</div>
                     </td>
