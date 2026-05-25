@@ -30,6 +30,24 @@ router.post('/', async (req, res) => {
   }
 });
 
+// @route   PUT /api/shifts/:id
+// @desc    Update a shift
+router.put('/:id', async (req, res) => {
+  try {
+    const { category, timeRange, durationText, price, colorCode } = req.body;
+    const shift = await Shift.findByIdAndUpdate(
+      req.params.id, 
+      { category, timeRange, durationText, price, colorCode }, 
+      { new: true }
+    );
+    if (!shift) return res.status(404).json({ msg: 'Shift not found' });
+    res.json(shift);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 // @route   DELETE /api/shifts/:id
 // @desc    Delete a shift
 router.delete('/:id', async (req, res) => {
