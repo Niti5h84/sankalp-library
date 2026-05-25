@@ -3,12 +3,20 @@ const webpush = require('web-push');
 const Student = require('./models/Student');
 const Admin = require('./models/Admin');
 
-// Configure web-push
-webpush.setVapidDetails(
-  process.env.VAPID_SUBJECT || 'mailto:admin@sankalp.com',
-  process.env.VAPID_PUBLIC_KEY,
-  process.env.VAPID_PRIVATE_KEY
-);
+// Configure web-push safely
+if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+  try {
+    webpush.setVapidDetails(
+      process.env.VAPID_SUBJECT || 'mailto:admin@sankalp.com',
+      process.env.VAPID_PUBLIC_KEY,
+      process.env.VAPID_PRIVATE_KEY
+    );
+  } catch (e) {
+    console.error('Failed to configure web-push:', e.message);
+  }
+} else {
+  console.warn('VAPID keys not found. Push notifications are disabled.');
+}
 
 // Schedule task to run every day at 9:00 AM
 cron.schedule('0 9 * * *', async () => {
