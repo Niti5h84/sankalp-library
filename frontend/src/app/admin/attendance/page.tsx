@@ -119,9 +119,9 @@ export default function AttendancePage() {
               <thead className="text-xs text-slate-500 uppercase bg-slate-50">
                 <tr>
                   <th className="px-4 md:px-6 py-4 font-bold rounded-tl-xl sticky left-0 bg-slate-50 z-30 w-40 md:w-64 border-r border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">Student Name</th>
-                  <th className="px-3 py-4 font-bold text-center bg-slate-50 md:sticky md:left-[256px] md:z-30 border-r border-slate-200 text-green-600" title="Total Present">P</th>
-                  <th className="px-3 py-4 font-bold text-center bg-slate-50 md:sticky md:left-[304px] md:z-30 border-r border-slate-200 text-red-600" title="Total Absent">A</th>
-                  <th className="px-3 py-4 font-bold text-center bg-slate-50 md:sticky md:left-[352px] md:z-30 border-r border-slate-200 text-brand-gold" title="Total Leave">L</th>
+                  <th className="px-3 py-4 font-bold text-center bg-slate-50 border-r border-slate-200 text-green-600" title="Total Present">P</th>
+                  <th className="px-3 py-4 font-bold text-center bg-slate-50 border-r border-slate-200 text-red-600" title="Total Absent">A</th>
+                  <th className="px-3 py-4 font-bold text-center bg-slate-50 border-r border-slate-200 text-brand-gold" title="Total Leave">L</th>
                   {daysArray.map(day => (
                     <th key={day} className="px-2 py-4 font-bold text-center min-w-[40px] border-b border-slate-200">
                       {day}
@@ -142,9 +142,9 @@ export default function AttendancePage() {
                       <div className="whitespace-nowrap text-ellipsis overflow-hidden" title={student.fullName}>{student.fullName}</div>
                       <div className="text-[10px] md:text-xs text-slate-400 font-normal mt-0.5">Room: {student.studentId}</div>
                     </td>
-                    <td className="px-3 py-3 font-bold text-center md:sticky md:left-[256px] bg-green-50/50 border-r border-slate-100 md:z-20 text-green-700">{pCount}</td>
-                    <td className="px-3 py-3 font-bold text-center md:sticky md:left-[304px] bg-red-50/50 border-r border-slate-100 md:z-20 text-red-700">{aCount}</td>
-                    <td className="px-3 py-3 font-bold text-center md:sticky md:left-[352px] bg-amber-50/50 border-r border-slate-100 md:z-20 text-brand-gold">{lCount}</td>
+                    <td className="px-3 py-3 font-bold text-center bg-green-50/50 border-r border-slate-100 text-green-700">{pCount}</td>
+                    <td className="px-3 py-3 font-bold text-center bg-red-50/50 border-r border-slate-100 text-red-700">{aCount}</td>
+                    <td className="px-3 py-3 font-bold text-center bg-amber-50/50 border-r border-slate-100 text-brand-gold">{lCount}</td>
                     {daysArray.map(day => {
                       const targetDate = new Date(year, currentDate.getMonth(), day);
                       const targetDateStr = new Date(targetDate.getTime() - (targetDate.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
