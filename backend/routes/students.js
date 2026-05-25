@@ -45,11 +45,12 @@ router.post('/', async (req, res) => {
     
     // Automatically reserve the seat if provided
     if (seat) {
+      const roomNum = parseInt(studentId.replace(/\D/g, ''), 10) || 1;
       await Seat.findOneAndUpdate(
         { seatNumber: seat },
         { 
-          $set: { status: 'Occupied', assignedTo: student._id },
-          $setOnInsert: { floorNumber: 1, seatType: 'Normal' }
+          $set: { status: 'Occupied', assignedTo: student._id, floorNumber: roomNum },
+          $setOnInsert: { seatType: 'Normal' }
         },
         { upsert: true, new: true }
       );
@@ -85,21 +86,25 @@ router.put('/:id', async (req, res) => {
     const student = await Student.findById(req.params.id);
     if (!student) return res.status(404).json({ msg: 'Student not found' });
 
-    // Update Seat if changed
-    if (student.address !== seat) {
-      if (student.address) {
+    // Update Seat and Room Number (floorNumber) if changed
+    if (seat) {
+      const roomNum = parseInt((studentId || student.studentId).replace(/\D/g, ''), 10) || 1;
+      
+      if (student.address && student.address !== seat) {
         await Seat.findOneAndUpdate({ seatNumber: student.address }, { status: 'Empty', assignedTo: null });
       }
-      if (seat) {
-        await Seat.findOneAndUpdate(
-          { seatNumber: seat }, 
-          { 
-            $set: { status: 'Occupied', assignedTo: student._id },
-            $setOnInsert: { floorNumber: 1, seatType: 'Normal' }
-          },
-          { upsert: true, new: true }
-        );
-      }
+      
+      await Seat.findOneAndUpdate(
+        { seatNumber: seat }, 
+        { 
+          $set: { status: 'Occupied', assignedTo: student._id, floorNumber: roomNum },
+          $setOnInsert: { seatType: 'Normal' }
+        },
+        { upsert: true, new: true }
+      );
+    } else if (student.address) {
+      // If seat was removed completely
+      await Seat.findOneAndUpdate({ seatNumber: student.address }, { status: 'Empty', assignedTo: null });
     }
 
     student.studentId = studentId || student.studentId;
