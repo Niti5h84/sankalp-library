@@ -112,13 +112,24 @@ export default function AttendancePage() {
                       <div className="text-xs text-slate-400 font-normal">{student.studentId}</div>
                     </td>
                     {daysArray.map(day => {
-                      const targetDateStr = new Date(year, currentDate.getMonth(), day).toISOString().split('T')[0];
+                      const targetDate = new Date(year, currentDate.getMonth(), day);
+                      const targetDateStr = new Date(targetDate.getTime() - (targetDate.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+                      
+                      const todayDate = new Date();
+                      todayDate.setHours(0,0,0,0);
+                      const isPastDate = targetDate < todayDate;
+
                       const record = attendance.find(a => 
                         a.student?._id === student._id && 
                         a.date.startsWith(targetDateStr)
                       );
                       
                       let cellContent = <Circle className="w-4 h-4 text-slate-200" />;
+                      
+                      if (isPastDate && !record) {
+                        cellContent = <div className="w-2.5 h-2.5 rounded-full bg-slate-800" title="Locked (Past Date)"></div>;
+                      }
+
                       if (record) {
                         if (record.status === 'Present') cellContent = <Check className="w-4 h-4 text-green-500" />;
                         else if (record.status === 'Absent') cellContent = <X className="w-4 h-4 text-red-500" />;
@@ -126,8 +137,9 @@ export default function AttendancePage() {
                       }
 
                       return (
-                        <td key={day} className="px-1 py-3 text-center border-r border-slate-50 last:border-0 group cursor-pointer relative"
+                        <td key={day} className={`px-1 py-3 text-center border-r border-slate-50 last:border-0 relative ${isPastDate ? 'cursor-not-allowed opacity-80 bg-slate-50/50' : 'group cursor-pointer'}`}
                             onClick={() => {
+                              if (isPastDate) return; // Prevent filling back dates
                               // Toggle logic: None -> Present -> Absent -> Leave -> None
                               let nextStatus = 'Present';
                               if (record?.status === 'Present') nextStatus = 'Absent';
@@ -136,7 +148,7 @@ export default function AttendancePage() {
                               markAttendance(student._id, day, nextStatus);
                             }}
                         >
-                          <div className="flex justify-center items-center w-8 h-8 rounded-lg mx-auto group-hover:bg-slate-100 transition-colors">
+                          <div className={`flex justify-center items-center w-8 h-8 rounded-lg mx-auto ${!isPastDate ? 'group-hover:bg-slate-100 transition-colors' : ''}`}>
                              {cellContent}
                           </div>
                         </td>
@@ -159,6 +171,7 @@ export default function AttendancePage() {
          <div className="flex items-center gap-2 text-sm text-slate-600"><X className="w-4 h-4 text-red-500" /> Absent</div>
          <div className="flex items-center gap-2 text-sm text-slate-600"><span className="text-brand-gold font-bold text-xs">L</span> Leave</div>
          <div className="flex items-center gap-2 text-sm text-slate-600"><Circle className="w-4 h-4 text-slate-200" /> Unmarked</div>
+         <div className="flex items-center gap-2 text-sm text-slate-600"><div className="w-2.5 h-2.5 rounded-full bg-slate-800 ml-1"></div> <span className="ml-0.5">Locked</span></div>
       </div>
     </div>
   );
