@@ -118,7 +118,10 @@ export default function AttendancePage() {
             <table className="w-full text-sm text-left">
               <thead className="text-xs text-slate-500 uppercase bg-slate-50">
                 <tr>
-                  <th className="px-6 py-4 font-bold rounded-tl-xl sticky left-0 bg-slate-50 z-20 w-64 border-r border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">Student Name</th>
+                  <th className="px-6 py-4 font-bold rounded-tl-xl sticky left-0 bg-slate-50 z-30 w-64 border-r border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">Student Name</th>
+                  <th className="px-3 py-4 font-bold text-center bg-slate-50 sticky left-[256px] z-30 border-r border-slate-200 text-green-600" title="Total Present">P</th>
+                  <th className="px-3 py-4 font-bold text-center bg-slate-50 sticky left-[304px] z-30 border-r border-slate-200 text-red-600" title="Total Absent">A</th>
+                  <th className="px-3 py-4 font-bold text-center bg-slate-50 sticky left-[352px] z-30 border-r border-slate-200 text-brand-gold" title="Total Leave">L</th>
                   {daysArray.map(day => (
                     <th key={day} className="px-2 py-4 font-bold text-center min-w-[40px] border-b border-slate-200">
                       {day}
@@ -135,15 +138,13 @@ export default function AttendancePage() {
 
                   return (
                   <motion.tr key={student._id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: idx * 0.05 }} className="border-b border-slate-50 hover:bg-slate-50/50">
-                    <td className="px-6 py-3 font-medium text-slate-800 sticky left-0 bg-white border-r border-slate-100 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
-                      <div>{student.fullName}</div>
+                    <td className="px-6 py-3 font-medium text-slate-800 sticky left-0 bg-white border-r border-slate-100 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
+                      <div className="whitespace-nowrap">{student.fullName}</div>
                       <div className="text-xs text-slate-400 font-normal">Room: {student.studentId}</div>
-                      <div className="flex gap-1.5 mt-1.5 text-[10px] font-bold">
-                        <span className="text-green-700 bg-green-100 px-1.5 py-0.5 rounded border border-green-200" title="Total Present">P: {pCount}</span>
-                        <span className="text-red-700 bg-red-100 px-1.5 py-0.5 rounded border border-red-200" title="Total Absent">A: {aCount}</span>
-                        <span className="text-brand-gold bg-brand-gold/10 px-1.5 py-0.5 rounded border border-brand-gold/20" title="Total Leave">L: {lCount}</span>
-                      </div>
                     </td>
+                    <td className="px-3 py-3 font-bold text-center sticky left-[256px] bg-green-50/50 border-r border-slate-100 z-20 text-green-700">{pCount}</td>
+                    <td className="px-3 py-3 font-bold text-center sticky left-[304px] bg-red-50/50 border-r border-slate-100 z-20 text-red-700">{aCount}</td>
+                    <td className="px-3 py-3 font-bold text-center sticky left-[352px] bg-amber-50/50 border-r border-slate-100 z-20 text-brand-gold">{lCount}</td>
                     {daysArray.map(day => {
                       const targetDate = new Date(year, currentDate.getMonth(), day);
                       const targetDateStr = new Date(targetDate.getTime() - (targetDate.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
