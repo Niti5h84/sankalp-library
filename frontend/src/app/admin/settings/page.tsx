@@ -72,6 +72,7 @@ export default function SettingsPage() {
                 <option>What is your favorite book?</option>
                 <option>What is the name of your first school?</option>
                 <option>What is your mother's maiden name?</option>
+                <option>What is your pet's name?</option>
               </select>
             </div>
           </div>

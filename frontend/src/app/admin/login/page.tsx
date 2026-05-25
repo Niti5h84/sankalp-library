@@ -21,6 +21,7 @@ export default function LoginPage() {
   const [forgotEmail, setForgotEmail] = useState("");
   const [recoveryMethod, setRecoveryMethod] = useState<"pin" | "question">("pin");
   const [securityPin, setSecurityPin] = useState("");
+  const [securityQuestion, setSecurityQuestion] = useState("What is your library's city?");
   const [securityAnswer, setSecurityAnswer] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [forgotStatus, setForgotStatus] = useState("");
@@ -46,6 +47,7 @@ export default function LoginPage() {
         email: forgotEmail, 
         newPassword,
         securityPin: recoveryMethod === "pin" ? securityPin : undefined,
+        securityQuestion: recoveryMethod === "question" ? securityQuestion : undefined,
         securityAnswer: recoveryMethod === "question" ? securityAnswer : undefined,
         recoveryMethod
       });
@@ -150,7 +152,16 @@ export default function LoginPage() {
                 {recoveryMethod === "pin" ? (
                   <input type="password" required value={securityPin} onChange={(e) => setSecurityPin(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue" placeholder="Security PIN (e.g. 1234)" />
                 ) : (
-                  <input type="text" required value={securityAnswer} onChange={(e) => setSecurityAnswer(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue" placeholder="Security Answer (e.g. your city)" />
+                  <div className="space-y-3">
+                    <select value={securityQuestion} onChange={(e) => setSecurityQuestion(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue bg-white">
+                      <option>What is your library's city?</option>
+                      <option>What is your favorite book?</option>
+                      <option>What is the name of your first school?</option>
+                      <option>What is your mother's maiden name?</option>
+                      <option>What is your pet's name?</option>
+                    </select>
+                    <input type="text" required value={securityAnswer} onChange={(e) => setSecurityAnswer(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue" placeholder="Security Answer" />
+                  </div>
                 )}
 
                 <input type="password" required minLength={6} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue" placeholder="New Password" />

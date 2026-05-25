@@ -68,7 +68,7 @@ router.post('/login', async (req, res) => {
 // @desc Directly reset admin password without email
 router.post('/reset-password-direct', async (req, res) => {
   try {
-    const { email, newPassword, securityPin, securityAnswer, recoveryMethod } = req.body;
+    const { email, newPassword, securityPin, securityQuestion, securityAnswer, recoveryMethod } = req.body;
     
     const admin = await Admin.findOne({ email });
     if (!admin) return res.status(404).json({ msg: 'Admin not found with this email.' });
@@ -80,8 +80,8 @@ router.post('/reset-password-direct', async (req, res) => {
           return res.status(400).json({ msg: 'Invalid Security PIN.' });
         }
       } else if (recoveryMethod === 'question') {
-        if (!securityAnswer || admin.securityAnswer.toLowerCase() !== securityAnswer.toLowerCase()) {
-          return res.status(400).json({ msg: 'Invalid Security Answer.' });
+        if (!securityAnswer || admin.securityAnswer.toLowerCase() !== securityAnswer.toLowerCase() || admin.securityQuestion !== securityQuestion) {
+          return res.status(400).json({ msg: 'Invalid Security Question or Answer.' });
         }
       } else {
         return res.status(400).json({ msg: 'Please select a valid recovery method.' });
