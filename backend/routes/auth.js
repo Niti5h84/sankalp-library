@@ -68,24 +68,24 @@ router.post('/login', async (req, res) => {
 // @desc Directly reset admin password without email
 router.post('/reset-password-direct', async (req, res) => {
   try {
-    const { email, newPassword, securityPin, securityAnswer } = req.body;
+    const { email, newPassword, securityPin, securityAnswer, recoveryMethod } = req.body;
     
     const admin = await Admin.findOne({ email });
     if (!admin) return res.status(404).json({ msg: 'Admin not found with this email.' });
 
-    // If security is set up, verify it
+    // If security is set up, verify it based on the chosen method
     if (admin.securityPin && admin.securityAnswer) {
-      if (admin.securityPin !== securityPin) {
-        return res.status(400).json({ msg: 'Invalid Security PIN.' });
+      if (recoveryMethod === 'pin') {
+        if (!securityPin || admin.securityPin !== securityPin) {
+          return res.status(400).json({ msg: 'Invalid Security PIN.' });
+        }
+      } else if (recoveryMethod === 'question') {
+        if (!securityAnswer || admin.securityAnswer.toLowerCase() !== securityAnswer.toLowerCase()) {
+          return res.status(400).json({ msg: 'Invalid Security Answer.' });
+        }
+      } else {
+        return res.status(400).json({ msg: 'Please select a valid recovery method.' });
       }
-      if (admin.securityAnswer.toLowerCase() !== securityAnswer.toLowerCase()) {
-        return res.status(400).json({ msg: 'Invalid Security Answer.' });
-      }
-    } else {
-      // For legacy admins who haven't set it up yet, maybe allow them or reject?
-      // Since user asked not to delete data, we will just allow it if they haven't set it yet, 
-      // but they should set it ASAP. Or we can force them to login normally and set it.
-      // We will allow reset if they haven't set security yet, to avoid locking them out.
     }
 
     const salt = await bcrypt.genSalt(10);

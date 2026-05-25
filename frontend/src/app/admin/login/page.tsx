@@ -19,6 +19,7 @@ export default function LoginPage() {
   // Reset Password State
   const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
+  const [recoveryMethod, setRecoveryMethod] = useState<"pin" | "question">("pin");
   const [securityPin, setSecurityPin] = useState("");
   const [securityAnswer, setSecurityAnswer] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -44,8 +45,9 @@ export default function LoginPage() {
       const res = await axios.post("https://sankalp-library.onrender.com/api/auth/reset-password-direct", { 
         email: forgotEmail, 
         newPassword,
-        securityPin,
-        securityAnswer
+        securityPin: recoveryMethod === "pin" ? securityPin : undefined,
+        securityAnswer: recoveryMethod === "question" ? securityAnswer : undefined,
+        recoveryMethod
       });
       setForgotStatus(res.data.msg || "Password updated successfully!");
       if (res.data.msg && res.data.msg.includes("successfully")) {
@@ -125,7 +127,18 @@ export default function LoginPage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden p-6 relative">
               <h3 className="font-bold text-xl text-slate-800 mb-2">Reset Password</h3>
-              <p className="text-sm text-slate-500 mb-4">Enter your security details to reset your password.</p>
+              <p className="text-sm text-slate-500 mb-4">Choose a method to reset your password.</p>
+              
+              {/* Method Selection */}
+              <div className="flex bg-slate-100 p-1 rounded-xl mb-4">
+                <button type="button" onClick={() => setRecoveryMethod("pin")} className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${recoveryMethod === "pin" ? "bg-white text-brand-blue shadow-sm" : "text-slate-500 hover:text-slate-700"}`}>
+                  Security PIN
+                </button>
+                <button type="button" onClick={() => setRecoveryMethod("question")} className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${recoveryMethod === "question" ? "bg-white text-brand-blue shadow-sm" : "text-slate-500 hover:text-slate-700"}`}>
+                  Security Question
+                </button>
+              </div>
+
               {forgotStatus && (
                  <div className={`p-3 rounded-xl mb-4 text-sm ${forgotStatus.includes('successfully') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
                    {forgotStatus}
@@ -133,8 +146,13 @@ export default function LoginPage() {
               )}
               <form onSubmit={handleForgotPassword} className="space-y-3">
                 <input type="email" required value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue" placeholder="Admin Email" />
-                <input type="password" required value={securityPin} onChange={(e) => setSecurityPin(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue" placeholder="Security PIN (e.g. 1234)" />
-                <input type="text" required value={securityAnswer} onChange={(e) => setSecurityAnswer(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue" placeholder="Security Answer (e.g. your city)" />
+                
+                {recoveryMethod === "pin" ? (
+                  <input type="password" required value={securityPin} onChange={(e) => setSecurityPin(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue" placeholder="Security PIN (e.g. 1234)" />
+                ) : (
+                  <input type="text" required value={securityAnswer} onChange={(e) => setSecurityAnswer(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue" placeholder="Security Answer (e.g. your city)" />
+                )}
+
                 <input type="password" required minLength={6} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue" placeholder="New Password" />
                 <div className="flex gap-3 pt-2">
                   <button type="button" onClick={() => setIsForgotModalOpen(false)} className="flex-1 py-3 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-colors">Cancel</button>
