@@ -61,7 +61,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <motion.aside 
         initial={false}
         animate={{ width: sidebarOpen ? "280px" : "80px" }}
-        className={`bg-brand-blue text-white shrink-0 flex-col transition-all duration-300 z-30 shadow-2xl ${mobileMenuOpen ? 'flex absolute inset-y-0 left-0' : 'hidden md:flex md:relative'}`}
+        className={`bg-brand-blue text-white shrink-0 flex-col transition-all duration-300 z-30 shadow-2xl print:hidden ${mobileMenuOpen ? 'flex absolute inset-y-0 left-0' : 'hidden md:flex md:relative'}`}
       >
         <div className="h-20 flex items-center justify-center border-b border-white/10 px-4">
           <BookOpen className={`text-brand-gold shrink-0 ${sidebarOpen ? 'w-8 h-8 mr-3' : 'w-10 h-10'}`} />
@@ -113,9 +113,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </motion.aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         {/* Top Navbar */}
-        <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 shadow-sm z-10 shrink-0">
+        <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-4 lg:px-8 shadow-sm z-10 shrink-0 print:hidden relative">
           <div className="flex items-center">
              {/* Mobile Menu Button */}
             <button onClick={() => setMobileMenuOpen(true)} className="md:hidden mr-4 text-brand-blue p-2 rounded-lg hover:bg-slate-100">
