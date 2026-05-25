@@ -16,9 +16,10 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Forgot Password State
+  // Reset Password State
   const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [forgotStatus, setForgotStatus] = useState("");
 
   const handleAdminLogin = async (e: React.FormEvent) => {
@@ -38,10 +39,15 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true); setForgotStatus("");
     try {
-      const res = await axios.post("https://sankalp-library.onrender.com/api/auth/forgot-password", { email: forgotEmail });
-      setForgotStatus(res.data.msg || "Recovery email sent!");
+      const res = await axios.post("https://sankalp-library.onrender.com/api/auth/reset-password-direct", { email: forgotEmail, newPassword });
+      setForgotStatus(res.data.msg || "Password updated successfully!");
+      if (res.data.msg && res.data.msg.includes("successfully")) {
+        setForgotEmail("");
+        setNewPassword("");
+        setTimeout(() => setIsForgotModalOpen(false), 2000);
+      }
     } catch (err: any) {
-      setForgotStatus(err.response?.data?.msg || "Failed to send email.");
+      setForgotStatus(err.response?.data?.msg || "Failed to update password.");
     } finally { setIsLoading(false); }
   };
 
@@ -88,7 +94,7 @@ export default function LoginPage() {
           <div className="space-y-2">
             <div className="flex justify-between items-center text-sm">
               <label className="font-medium text-blue-100">Password</label>
-              <button type="button" onClick={() => setIsForgotModalOpen(true)} className="text-brand-gold hover:underline">Forgot Password?</button>
+              <button type="button" onClick={() => { setIsForgotModalOpen(true); setForgotStatus(""); }} className="text-brand-gold hover:underline">Forgot Password?</button>
             </div>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-blue-300" />
@@ -110,18 +116,19 @@ export default function LoginPage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden p-6 relative">
               <h3 className="font-bold text-xl text-slate-800 mb-2">Reset Password</h3>
-              <p className="text-sm text-slate-500 mb-4">Enter your admin email to receive a password reset link.</p>
+              <p className="text-sm text-slate-500 mb-4">Enter your admin email and a new password.</p>
               {forgotStatus && (
-                 <div className={`p-3 rounded-xl mb-4 text-sm ${forgotStatus.includes('sent') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                 <div className={`p-3 rounded-xl mb-4 text-sm ${forgotStatus.includes('successfully') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
                    {forgotStatus}
                  </div>
               )}
               <form onSubmit={handleForgotPassword} className="space-y-4">
-                <input type="email" required value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue" placeholder="admin@example.com" />
+                <input type="email" required value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue" placeholder="Admin Email" />
+                <input type="password" required minLength={6} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue" placeholder="New Password" />
                 <div className="flex gap-3">
-                  <button type="button" onClick={() => setIsForgotModalOpen(false)} className="flex-1 py-3 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-colors">Close</button>
+                  <button type="button" onClick={() => setIsForgotModalOpen(false)} className="flex-1 py-3 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-colors">Cancel</button>
                   <button type="submit" disabled={isLoading} className="flex-1 py-3 bg-brand-blue hover:bg-brand-blue/90 text-white rounded-xl font-bold flex justify-center items-center transition-colors">
-                    {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Send Link"}
+                    {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Update"}
                   </button>
                 </div>
               </form>

@@ -64,58 +64,23 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// @route POST /api/auth/forgot-password
-// @desc Send password reset/recovery info email
-router.post('/forgot-password', async (req, res) => {
+// @route POST /api/auth/reset-password-direct
+// @desc Directly reset admin password without email
+router.post('/reset-password-direct', async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email, newPassword } = req.body;
     
-    // Check if admin exists
     const admin = await Admin.findOne({ email });
-    if (!admin) return res.status(404).json({ msg: 'Email not found in our records.' });
+    if (!admin) return res.status(404).json({ msg: 'Admin not found with this email.' });
 
-    // In a real app, generate a secure token here.
-    const resetLink = `http://localhost:3000/admin/reset-password?token=dummy-token-123`;
+    const salt = await bcrypt.genSalt(10);
+    admin.password = await bcrypt.hash(newPassword, salt);
+    await admin.save();
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER || 'noreply@sankalplibrary.com',
-      to: email,
-      subject: 'Password Recovery - Sankalp Library',
-      html: `
-        <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #ddd; border-radius: 10px; overflow: hidden;">
-          <div style="background-color: #0b223f; color: #fff; padding: 20px; text-align: center;">
-            <h2 style="margin: 0; color: #d4af37;">Sankalp Library</h2>
-          </div>
-          <div style="padding: 20px; color: #333;">
-            <h3>Hello ${admin.name},</h3>
-            <p>We received a request to view or reset your account details for the Admin Panel.</p>
-            <ul style="background: #f8f9fa; padding: 15px 30px; border-radius: 8px;">
-              <li><strong>Name:</strong> ${admin.name}</li>
-              <li><strong>Email:</strong> ${admin.email}</li>
-            </ul>
-            <p>For security reasons, your actual password is encrypted and cannot be shown. To create a new password, click the secure link below:</p>
-            <div style="text-align: center; margin: 25px 0;">
-              <a href="${resetLink}" style="background-color: #0b223f; color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Reset Password</a>
-            </div>
-            <p style="font-size: 12px; color: #777;">If you did not request this, please ignore this email.</p>
-          </div>
-        </div>
-      `
-    };
-
-    // Note: If .env variables are not set, this will fail in production.
-    // For local testing without a real email, we can just send success if not configured.
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      console.log('Nodemailer is not configured with real credentials. The email content would be:', mailOptions.html);
-      return res.json({ msg: 'Mock email sent! Check terminal. (Set EMAIL_USER in .env for real emails)' });
-    }
-
-    await transporter.sendMail(mailOptions);
-    res.json({ msg: 'Recovery email sent successfully!' });
-
+    res.json({ msg: 'Password updated successfully! You can now login.' });
   } catch (err) {
-    console.error('Email error:', err);
-    res.status(500).json({ msg: 'Failed to send recovery email. Check server configuration.' });
+    console.error(err);
+    res.status(500).send('Server Error');
   }
 });
 
