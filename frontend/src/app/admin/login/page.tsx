@@ -19,6 +19,8 @@ export default function LoginPage() {
   // Reset Password State
   const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
+  const [securityPin, setSecurityPin] = useState("");
+  const [securityAnswer, setSecurityAnswer] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [forgotStatus, setForgotStatus] = useState("");
 
@@ -39,11 +41,18 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true); setForgotStatus("");
     try {
-      const res = await axios.post("https://sankalp-library.onrender.com/api/auth/reset-password-direct", { email: forgotEmail, newPassword });
+      const res = await axios.post("https://sankalp-library.onrender.com/api/auth/reset-password-direct", { 
+        email: forgotEmail, 
+        newPassword,
+        securityPin,
+        securityAnswer
+      });
       setForgotStatus(res.data.msg || "Password updated successfully!");
       if (res.data.msg && res.data.msg.includes("successfully")) {
         setForgotEmail("");
         setNewPassword("");
+        setSecurityPin("");
+        setSecurityAnswer("");
         setTimeout(() => setIsForgotModalOpen(false), 2000);
       }
     } catch (err: any) {
@@ -116,16 +125,18 @@ export default function LoginPage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden p-6 relative">
               <h3 className="font-bold text-xl text-slate-800 mb-2">Reset Password</h3>
-              <p className="text-sm text-slate-500 mb-4">Enter your admin email and a new password.</p>
+              <p className="text-sm text-slate-500 mb-4">Enter your security details to reset your password.</p>
               {forgotStatus && (
                  <div className={`p-3 rounded-xl mb-4 text-sm ${forgotStatus.includes('successfully') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
                    {forgotStatus}
                  </div>
               )}
-              <form onSubmit={handleForgotPassword} className="space-y-4">
+              <form onSubmit={handleForgotPassword} className="space-y-3">
                 <input type="email" required value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue" placeholder="Admin Email" />
+                <input type="password" required value={securityPin} onChange={(e) => setSecurityPin(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue" placeholder="Security PIN (e.g. 1234)" />
+                <input type="text" required value={securityAnswer} onChange={(e) => setSecurityAnswer(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue" placeholder="Security Answer (e.g. your city)" />
                 <input type="password" required minLength={6} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue" placeholder="New Password" />
-                <div className="flex gap-3">
+                <div className="flex gap-3 pt-2">
                   <button type="button" onClick={() => setIsForgotModalOpen(false)} className="flex-1 py-3 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-colors">Cancel</button>
                   <button type="submit" disabled={isLoading} className="flex-1 py-3 bg-brand-blue hover:bg-brand-blue/90 text-white rounded-xl font-bold flex justify-center items-center transition-colors">
                     {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Update"}

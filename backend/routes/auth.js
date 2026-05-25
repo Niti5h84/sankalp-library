@@ -68,16 +68,51 @@ router.post('/login', async (req, res) => {
 // @desc Directly reset admin password without email
 router.post('/reset-password-direct', async (req, res) => {
   try {
-    const { email, newPassword } = req.body;
+    const { email, newPassword, securityPin, securityAnswer } = req.body;
     
     const admin = await Admin.findOne({ email });
     if (!admin) return res.status(404).json({ msg: 'Admin not found with this email.' });
+
+    // If security is set up, verify it
+    if (admin.securityPin && admin.securityAnswer) {
+      if (admin.securityPin !== securityPin) {
+        return res.status(400).json({ msg: 'Invalid Security PIN.' });
+      }
+      if (admin.securityAnswer.toLowerCase() !== securityAnswer.toLowerCase()) {
+        return res.status(400).json({ msg: 'Invalid Security Answer.' });
+      }
+    } else {
+      // For legacy admins who haven't set it up yet, maybe allow them or reject?
+      // Since user asked not to delete data, we will just allow it if they haven't set it yet, 
+      // but they should set it ASAP. Or we can force them to login normally and set it.
+      // We will allow reset if they haven't set security yet, to avoid locking them out.
+    }
 
     const salt = await bcrypt.genSalt(10);
     admin.password = await bcrypt.hash(newPassword, salt);
     await admin.save();
 
     res.json({ msg: 'Password updated successfully! You can now login.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route POST /api/auth/update-security
+// @desc Update admin security PIN and Question
+router.post('/update-security', async (req, res) => {
+  try {
+    const { adminId, securityPin, securityQuestion, securityAnswer } = req.body;
+    const admin = await Admin.findById(adminId);
+    if (!admin) return res.status(404).json({ msg: 'Admin not found.' });
+
+    admin.securityPin = securityPin;
+    admin.securityQuestion = securityQuestion;
+    admin.securityAnswer = securityAnswer;
+    await admin.save();
+
+    res.json({ msg: 'Security settings updated successfully!' });
   } catch (err) {
     console.error(err);
     res.status(500).send('Server Error');
