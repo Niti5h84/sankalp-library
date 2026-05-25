@@ -43,10 +43,10 @@ export default function Home() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl mt-12"
+          className="flex justify-center w-full max-w-lg mt-12"
         >
           {/* Admin Portal Card */}
-          <Link href="/admin/login" className="group">
+          <Link href="/admin/login" className="group w-full">
             <div className="bg-brand-blue-light/40 backdrop-blur-xl border border-white/10 p-8 rounded-3xl hover:bg-brand-blue-light/60 transition-all duration-300 hover:border-brand-gold/50 flex flex-col items-center text-center h-full group-hover:-translate-y-2 shadow-2xl">
               <div className="bg-brand-gold/20 p-4 rounded-full mb-6 group-hover:scale-110 transition-transform duration-300">
                 <ShieldCheck className="w-10 h-10 text-brand-gold" />
@@ -57,22 +57,6 @@ export default function Home() {
               </p>
               <div className="flex items-center text-brand-gold font-medium group-hover:text-white transition-colors">
                 Access Dashboard <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </div>
-          </Link>
-
-          {/* Student Portal Card */}
-          <Link href="/student/login" className="group">
-            <div className="bg-brand-blue-light/40 backdrop-blur-xl border border-white/10 p-8 rounded-3xl hover:bg-brand-blue-light/60 transition-all duration-300 hover:border-white/50 flex flex-col items-center text-center h-full group-hover:-translate-y-2 shadow-2xl">
-              <div className="bg-white/10 p-4 rounded-full mb-6 group-hover:scale-110 transition-transform duration-300">
-                <User className="w-10 h-10 text-white" />
-              </div>
-              <h2 className="text-2xl font-bold mb-3">Student Panel</h2>
-              <p className="text-blue-200 mb-8 flex-grow">
-                View your attendance, fee receipts, seat details, and important notifications.
-              </p>
-              <div className="flex items-center text-white font-medium group-hover:text-brand-gold transition-colors">
-                Student Login <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
           </Link>
