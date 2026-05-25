@@ -58,7 +58,7 @@ export default function ReportsPage() {
 
   const handleWhatsApp = () => {
     if (!selectedStudent) return;
-    const msg = `Hello ${selectedStudent.fullName},\n\nHere is your Sankalp Library Report Card update:\n\n*ID:* ${selectedStudent.studentId}\n*Joined:* ${format(new Date(selectedStudent.admissionDate), "dd MMM yyyy")}\n*Total Duration:* ${calculateDuration(selectedStudent.admissionDate)}\n*Current Fee Month:* ${selectedStudent.feeMonth || 'N/A'}\n*Fee Expiry:* ${selectedStudent.feeExpiryDate ? format(new Date(selectedStudent.feeExpiryDate), "dd MMM yyyy") : 'N/A'}\n*Paid Amount:* ₹${selectedStudent.paidAmount}/-\n*Payment Mode:* ${selectedStudent.paymentMode}\n\nRegards,\n*Sankalp Library & Roy Online World*`;
+    const msg = `Hello ${selectedStudent.fullName},\n\nHere is your Sankalp Library Report Card update:\n\n*Room Number:* ${selectedStudent.studentId}\n*Joined:* ${format(new Date(selectedStudent.admissionDate), "dd MMM yyyy")}\n*Total Duration:* ${calculateDuration(selectedStudent.admissionDate)}\n*Current Fee Month:* ${selectedStudent.feeMonth || 'N/A'}\n*Fee Expiry:* ${selectedStudent.feeExpiryDate ? format(new Date(selectedStudent.feeExpiryDate), "dd MMM yyyy") : 'N/A'}\n*Paid Amount:* ₹${selectedStudent.paidAmount}/-\n*Payment Mode:* ${selectedStudent.paymentMode}\n\nRegards,\n*Sankalp Library & Roy Online World*`;
     const url = `https://wa.me/91${selectedStudent.mobileNumber}?text=${encodeURIComponent(msg)}`;
     window.open(url, '_blank');
   };
@@ -211,7 +211,7 @@ export default function ReportsPage() {
                       {!isEditing ? (
                         <div className="space-y-4">
                           <div><p className="text-xs text-slate-500 uppercase">Student Name</p><p className="font-bold text-lg text-slate-800">{selectedStudent.fullName}</p></div>
-                          <div><p className="text-xs text-slate-500 uppercase">Registration ID</p><p className="font-bold text-brand-blue">{selectedStudent.studentId}</p></div>
+                          <div><p className="text-xs text-slate-500 uppercase">Room Number</p><p className="font-bold text-brand-blue">{selectedStudent.studentId}</p></div>
                           <div><p className="text-xs text-slate-500 uppercase">Father's Name</p><p className="font-semibold text-slate-700">{selectedStudent.fatherName || 'N/A'}</p></div>
                           <div className="flex items-center gap-2"><Phone className="w-4 h-4 text-slate-400" /><p className="font-semibold text-slate-700">{selectedStudent.mobileNumber}</p></div>
                         </div>

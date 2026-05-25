@@ -128,7 +128,7 @@ export default function StudentsPage() {
   const handleWhatsAppShare = () => {
     if (!billData) return;
     const dueAmount = Number(billData.totalFee) - Number(billData.paidAmount);
-    const message = `*Sankalp Library - Admission Receipt* 📚\n\n*Name:* ${billData.fullName}\n*Student ID:* ${billData.studentId}\n*Date:* ${billData.date}\n\n*Seat:* ${billData.seat} (${billData.shift})\n*Fee Month:* ${billData.feeMonth}\n*Total Fee:* ₹${billData.totalFee}\n*Paid:* ₹${billData.paidAmount}\n*Due:* ₹${dueAmount}\n\nThank you for joining Sankalp Library!`;
+    const message = `*Sankalp Library - Admission Receipt* 📚\n\n*Name:* ${billData.fullName}\n*Room Number:* ${billData.studentId}\n*Date:* ${billData.date}\n\n*Seat:* ${billData.seat} (${billData.shift})\n*Fee Month:* ${billData.feeMonth}\n*Total Fee:* ₹${billData.totalFee}\n*Paid:* ₹${billData.paidAmount}\n*Due:* ₹${dueAmount}\n\nThank you for joining Sankalp Library!`;
     const encodedMessage = encodeURIComponent(message);
     window.open(`https://wa.me/91${billData.phone}?text=${encodedMessage}`, "_blank");
   };
@@ -223,8 +223,8 @@ export default function StudentsPage() {
               <form onSubmit={handleAddStudent} className="p-6 space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-slate-700">Student ID</label>
-                    <input type="text" required value={formData.studentId} onChange={(e) => setFormData({...formData, studentId: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" placeholder="e.g. STU-001" />
+                    <label className="text-sm font-medium text-slate-700">Room Number</label>
+                    <input type="text" required value={formData.studentId} onChange={(e) => setFormData({...formData, studentId: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-gold outline-none" placeholder="e.g. Room-101" />
                   </div>
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-slate-700">Full Name</label>
@@ -379,7 +379,7 @@ export default function StudentsPage() {
                     </div>
                   )}
                   <div className="flex justify-between border-b border-dashed border-slate-300 pb-2 print:pb-1">
-                    <span className="font-semibold text-slate-600 print:text-slate-800">Student ID:</span>
+                    <span className="font-semibold text-slate-600 print:text-slate-800">Room Number:</span>
                     <span className="font-bold print:text-black">{billData.studentId}</span>
                   </div>
                   <div className="flex justify-between border-b border-dashed border-slate-300 pb-2 print:pb-1">
@@ -500,7 +500,7 @@ export default function StudentsPage() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-slate-50 text-slate-500 text-sm border-b border-slate-100">
-                  <th className="px-6 py-4 font-semibold">Student ID</th>
+                  <th className="px-6 py-4 font-semibold">Room Number</th>
                   <th className="px-6 py-4 font-semibold">Name</th>
                   <th className="px-6 py-4 font-semibold">Contact</th>
                   <th className="px-6 py-4 font-semibold">Seat & Shift</th>
