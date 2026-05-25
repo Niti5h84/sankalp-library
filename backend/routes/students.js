@@ -58,7 +58,10 @@ router.post('/', async (req, res) => {
     res.status(201).json(student);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    if (err.code === 11000) {
+      return res.status(400).json({ msg: 'Room Number is already assigned to another student.' });
+    }
+    res.status(500).json({ msg: 'Server Error. Ensure backend is running.' });
   }
 });
 
@@ -117,7 +120,10 @@ router.put('/:id', async (req, res) => {
     res.json(student);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    if (err.code === 11000) {
+      return res.status(400).json({ msg: 'Room Number is already assigned to another student.' });
+    }
+    res.status(500).json({ msg: 'Server Error. Ensure backend is running.' });
   }
 });
 

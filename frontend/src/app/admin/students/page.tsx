@@ -86,9 +86,9 @@ export default function StudentsPage() {
       setFormData({ studentId: "", fullName: "", fatherName: "", studentAddress: "", phone: "", seat: "", shift: "Morning", totalFee: "1000", paidAmount: "1000", feeMonth: "January", admissionDate: new Date().toISOString().split('T')[0], feeExpiryDate: new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0], paymentMode: "Cash" });
       setIsCustomShift(false);
       setEditId(null);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to save student", err);
-      alert("Failed to save student. Ensure backend is running.");
+      alert(err.response?.data?.msg || "Failed to save student. Ensure backend is running.");
     } finally {
       setIsSubmitting(false);
     }
