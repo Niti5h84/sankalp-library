@@ -27,6 +27,32 @@ app.use('/api/notifications', require('./routes/notifications'));
 // Initialize Cron Jobs
 require('./cron');
 
+// TEMPORARY SYNC ENDPOINT
+app.get('/api/sync-seats', async (req, res) => {
+  const Student = require('./models/Student');
+  const Seat = require('./models/Seat');
+  try {
+    await Seat.updateMany({}, { status: 'Empty', assignedTo: null });
+    const students = await Student.find({});
+    let syncData = [];
+    for (const student of students) {
+      if (student.address) {
+        const seatNumber = student.address.trim();
+        const roomNum = parseInt(String(student.studentId).replace(/\D/g, ''), 10) || 1;
+        await Seat.findOneAndUpdate(
+          { seatNumber: seatNumber },
+          { $set: { status: 'Occupied', assignedTo: student._id, floorNumber: roomNum }, $setOnInsert: { seatType: 'Normal' } },
+          { upsert: true, new: true }
+        );
+        syncData.push(`Synced ${seatNumber} for ${student.fullName} in Room ${roomNum}`);
+      }
+    }
+    res.json({ message: 'Sync complete', details: syncData });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
 // Basic API Route
 app.get('/api/health', (req, res) => {
   res.json({ status: 'active', message: 'Sankalp Library API is running smoothly.' });
