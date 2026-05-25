@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Check, X, Circle, Loader2 } from "lucide-react";
 import axios from "axios";
@@ -11,6 +11,35 @@ export default function AttendancePage() {
   const [attendance, setAttendance] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [attendanceModal, setAttendanceModal] = useState<{isOpen: boolean, student: any, day: number, dateStr: string} | null>(null);
+
+  // Drag to scroll state
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!scrollContainerRef.current) return;
+    setIsDragging(true);
+    setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
+    setScrollLeft(scrollContainerRef.current.scrollLeft);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !scrollContainerRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollContainerRef.current.offsetLeft;
+    const walk = (x - startX) * 2; // scroll-fast
+    scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+  };
 
   const fetchStudents = async () => {
     try {
@@ -114,7 +143,14 @@ export default function AttendancePage() {
             <Loader2 className="w-8 h-8 animate-spin text-brand-blue" />
           </div>
         ) : (
-          <div className="overflow-x-auto custom-scrollbar">
+          <div 
+            ref={scrollContainerRef}
+            onMouseDown={handleMouseDown}
+            onMouseLeave={handleMouseLeave}
+            onMouseUp={handleMouseUp}
+            onMouseMove={handleMouseMove}
+            className={`overflow-x-auto custom-scrollbar ${isDragging ? 'cursor-grabbing select-none' : 'cursor-grab'}`}
+          >
             <table className="w-full text-sm text-left">
               <thead className="text-xs text-slate-500 uppercase bg-slate-50">
                 <tr>
