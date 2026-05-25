@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Users, UserCheck, Armchair, Wallet, CalendarCheck, TrendingUp, AlertCircle, Loader2, Calendar as CalendarIcon, Check, X } from "lucide-react";
+import { Users, UserCheck, Armchair, Wallet, CalendarCheck, TrendingUp, AlertCircle, Loader2, Calendar as CalendarIcon, Check, X, ChevronDown, ChevronUp } from "lucide-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -16,6 +16,7 @@ export default function DashboardPage() {
   const [students, setStudents] = useState<any[]>([]);
   const [attendance, setAttendance] = useState<any[]>([]);
   const [isTrackerLoading, setIsTrackerLoading] = useState(true);
+  const [isTrackerOpen, setIsTrackerOpen] = useState(false);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -111,16 +112,24 @@ export default function DashboardPage() {
 
       {/* Monthly Attendance Tracker */}
       <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden mt-8">
-        <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/50">
-          <div>
-            <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-              <CalendarIcon className="w-6 h-6 text-brand-blue" />
-              Monthly Attendance Tracker
-            </h3>
-            <p className="text-slate-500 text-sm mt-1">Track Present, Absent, and Leave totals for every student.</p>
+        <div 
+          onClick={() => setIsTrackerOpen(!isTrackerOpen)}
+          className="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/50 cursor-pointer hover:bg-slate-100/50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <div className="bg-brand-blue/10 p-3 rounded-xl text-brand-blue">
+              <CalendarIcon className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                Monthly Attendance Tracker
+              </h3>
+              <p className="text-slate-500 text-sm mt-1">Track Present, Absent, and Leave totals for every student.</p>
+            </div>
           </div>
           
-          <div className="flex gap-2 bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="flex gap-2 bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-sm" onClick={e => e.stopPropagation()}>
             <select 
               value={currentDate.getMonth()} 
               onChange={(e) => setCurrentDate(new Date(currentDate.getFullYear(), parseInt(e.target.value), 1))}
@@ -141,14 +150,19 @@ export default function DashboardPage() {
               ))}
             </select>
           </div>
+          <div className="text-slate-400 bg-white p-2 rounded-full border border-slate-200 shadow-sm">
+            {isTrackerOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+          </div>
+        </div>
         </div>
 
-        {isTrackerLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <Loader2 className="w-8 h-8 text-brand-blue animate-spin" />
-          </div>
-        ) : (
-          <div className="overflow-x-auto custom-scrollbar">
+        {isTrackerOpen && (
+          isTrackerLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <Loader2 className="w-8 h-8 text-brand-blue animate-spin" />
+            </div>
+          ) : (
+            <div className="overflow-x-auto custom-scrollbar">
             <table className="w-full text-sm text-left">
               <thead className="text-xs text-slate-500 uppercase bg-slate-50">
                 <tr>
@@ -218,6 +232,7 @@ export default function DashboardPage() {
               </tbody>
             </table>
           </div>
+          )
         )}
       </div>
     </div>
