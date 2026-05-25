@@ -82,9 +82,28 @@ export default function AttendancePage() {
           <p className="text-slate-500 text-sm mt-1">Mark daily attendance for all active students.</p>
         </div>
         
-        <div className="flex items-center gap-4 bg-slate-50 px-4 py-2 rounded-xl border border-slate-200">
+        <div className="flex items-center gap-2 bg-slate-50 px-3 py-2 rounded-xl border border-slate-200">
           <button onClick={handlePrevMonth} className="p-2 hover:bg-white rounded-lg transition-colors"><ChevronLeft className="w-5 h-5 text-slate-600" /></button>
-          <div className="font-bold text-slate-800 w-32 text-center">{monthName} {year}</div>
+          <div className="flex gap-2">
+            <select 
+              value={currentDate.getMonth()} 
+              onChange={(e) => { setCurrentDate(new Date(currentDate.getFullYear(), parseInt(e.target.value), 1)); setIsLoading(true); }}
+              className="bg-transparent font-bold text-slate-800 outline-none cursor-pointer hover:bg-slate-200/50 px-2 py-1 rounded appearance-none"
+            >
+              {['January','February','March','April','May','June','July','August','September','October','November','December'].map((m, i) => (
+                <option key={i} value={i}>{m}</option>
+              ))}
+            </select>
+            <select 
+              value={currentDate.getFullYear()} 
+              onChange={(e) => { setCurrentDate(new Date(parseInt(e.target.value), currentDate.getMonth(), 1)); setIsLoading(true); }}
+              className="bg-transparent font-bold text-slate-800 outline-none cursor-pointer hover:bg-slate-200/50 px-2 py-1 rounded appearance-none"
+            >
+              {[2024, 2025, 2026, 2027, 2028, 2029, 2030].map(y => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+          </div>
           <button onClick={handleNextMonth} className="p-2 hover:bg-white rounded-lg transition-colors"><ChevronRight className="w-5 h-5 text-slate-600" /></button>
         </div>
       </div>
@@ -108,11 +127,22 @@ export default function AttendancePage() {
                 </tr>
               </thead>
               <tbody>
-                {students.map((student, idx) => (
+                {students.map((student, idx) => {
+                  const studentRecords = attendance.filter(a => a.student?._id === student._id);
+                  const pCount = studentRecords.filter(a => a.status === 'Present').length;
+                  const aCount = studentRecords.filter(a => a.status === 'Absent').length;
+                  const lCount = studentRecords.filter(a => a.status === 'Leave').length;
+
+                  return (
                   <motion.tr key={student._id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: idx * 0.05 }} className="border-b border-slate-50 hover:bg-slate-50/50">
                     <td className="px-6 py-3 font-medium text-slate-800 sticky left-0 bg-white border-r border-slate-100 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
                       <div>{student.fullName}</div>
-                      <div className="text-xs text-slate-400 font-normal">{student.studentId}</div>
+                      <div className="text-xs text-slate-400 font-normal">Room: {student.studentId}</div>
+                      <div className="flex gap-1.5 mt-1.5 text-[10px] font-bold">
+                        <span className="text-green-700 bg-green-100 px-1.5 py-0.5 rounded border border-green-200" title="Total Present">P: {pCount}</span>
+                        <span className="text-red-700 bg-red-100 px-1.5 py-0.5 rounded border border-red-200" title="Total Absent">A: {aCount}</span>
+                        <span className="text-brand-gold bg-brand-gold/10 px-1.5 py-0.5 rounded border border-brand-gold/20" title="Total Leave">L: {lCount}</span>
+                      </div>
                     </td>
                     {daysArray.map(day => {
                       const targetDate = new Date(year, currentDate.getMonth(), day);
@@ -160,7 +190,8 @@ export default function AttendancePage() {
                       );
                     })}
                   </motion.tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
             {students.length === 0 && (
