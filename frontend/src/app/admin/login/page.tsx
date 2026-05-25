@@ -149,19 +149,19 @@ export default function LoginPage() {
               <form onSubmit={handleForgotPassword} className="space-y-4 text-left">
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-slate-500 uppercase ml-1">Admin Email</label>
-                  <input type="email" required value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all" placeholder="e.g. admin@example.com" />
+                  <input type="email" required value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all text-slate-800 bg-white" placeholder="e.g. admin@example.com" />
                 </div>
                 
                 {recoveryMethod === "pin" ? (
                   <div className="space-y-1">
                     <label className="text-xs font-semibold text-slate-500 uppercase ml-1">Security PIN</label>
-                    <input type="password" required value={securityPin} onChange={(e) => setSecurityPin(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all" placeholder="Enter your 4 or 6 digit PIN" />
+                    <input type="password" required value={securityPin} onChange={(e) => setSecurityPin(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all text-slate-800 bg-white" placeholder="Enter your 4 or 6 digit PIN" />
                   </div>
                 ) : (
                   <div className="space-y-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
                     <div className="space-y-1">
                       <label className="text-xs font-semibold text-slate-500 uppercase ml-1">1. Select your Security Question</label>
-                      <select value={securityQuestion} onChange={(e) => setSecurityQuestion(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 bg-white text-slate-700 cursor-pointer shadow-sm">
+                      <select value={securityQuestion} onChange={(e) => setSecurityQuestion(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 bg-white text-slate-800 cursor-pointer shadow-sm">
                         <option>What is your library's city?</option>
                         <option>What is your favorite book?</option>
                         <option>What is the name of your first school?</option>
@@ -171,14 +171,14 @@ export default function LoginPage() {
                     </div>
                     <div className="space-y-1">
                       <label className="text-xs font-semibold text-slate-500 uppercase ml-1">2. Write your Answer</label>
-                      <input type="text" required value={securityAnswer} onChange={(e) => setSecurityAnswer(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all shadow-sm" placeholder="Enter your answer here" />
+                      <input type="text" required value={securityAnswer} onChange={(e) => setSecurityAnswer(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all shadow-sm text-slate-800 bg-white" placeholder="Enter your answer here" />
                     </div>
                   </div>
                 )}
 
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-slate-500 uppercase ml-1">New Password</label>
-                  <input type="password" required minLength={6} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all" placeholder="Enter new password (min 6 chars)" />
+                  <input type="password" required minLength={6} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all text-slate-800 bg-white" placeholder="Enter new password (min 6 chars)" />
                 </div>
 
                 <div className="flex gap-3 pt-4 border-t border-slate-100">
