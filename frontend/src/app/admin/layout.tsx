@@ -119,7 +119,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Mobile Overlay */}
       {mobileMenuOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-20 md:hidden"
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
@@ -128,7 +128,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <motion.aside 
         initial={false}
         animate={{ width: sidebarOpen ? "280px" : "80px" }}
-        className={`bg-brand-blue text-white shrink-0 flex-col transition-all duration-300 z-30 shadow-2xl print:hidden ${mobileMenuOpen ? 'flex absolute inset-y-0 left-0' : 'hidden md:flex md:relative'}`}
+        className={`bg-brand-blue text-white shrink-0 flex-col transition-all duration-300 z-50 shadow-2xl print:hidden ${mobileMenuOpen ? 'flex absolute inset-y-0 left-0' : 'hidden md:flex md:relative'}`}
       >
         <div className="h-20 flex items-center justify-center border-b border-white/10 px-4">
           <BookOpen className={`text-brand-gold shrink-0 ${sidebarOpen ? 'w-8 h-8 mr-3' : 'w-10 h-10'}`} />

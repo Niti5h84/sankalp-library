@@ -169,11 +169,8 @@ export default function DashboardPage() {
                   const percent = totalMarked === 0 ? 0 : Math.round((pCount / totalMarked) * 100);
 
                   return (
-                    <motion.tr 
+                    <tr 
                       key={student._id} 
-                      initial={{ opacity: 0 }} 
-                      animate={{ opacity: 1 }} 
-                      transition={{ delay: idx * 0.05 }} 
                       className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors"
                     >
                       <td className="px-6 py-4">
@@ -210,7 +207,7 @@ export default function DashboardPage() {
                           <span className="font-bold text-slate-700 w-10">{percent}%</span>
                         </div>
                       </td>
-                    </motion.tr>
+                    </tr>
                   );
                 })}
                 {students.length === 0 && (

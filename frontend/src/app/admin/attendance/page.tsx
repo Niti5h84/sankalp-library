@@ -137,7 +137,7 @@ export default function AttendancePage() {
                   const lCount = studentRecords.filter(a => a.status === 'Leave').length;
 
                   return (
-                  <motion.tr key={student._id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: idx * 0.05 }} className="border-b border-slate-50 hover:bg-slate-50/50">
+                  <tr key={student._id} className="border-b border-slate-50 hover:bg-slate-50/50">
                     <td className="px-6 py-3 font-medium text-slate-800 sticky left-0 bg-white border-r border-slate-100 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
                       <div className="whitespace-nowrap">{student.fullName}</div>
                       <div className="text-xs text-slate-400 font-normal">Room: {student.studentId}</div>
@@ -190,7 +190,7 @@ export default function AttendancePage() {
                         </td>
                       );
                     })}
-                  </motion.tr>
+                    </tr>
                   );
                 })}
               </tbody>
