@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShieldCheck, Lock, Mail, ArrowRight, Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -25,6 +25,11 @@ export default function LoginPage() {
   const [securityAnswer, setSecurityAnswer] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [forgotStatus, setForgotStatus] = useState("");
+
+  // Wake up Render free-tier backend as soon as the login page loads
+  useEffect(() => {
+    axios.get("https://sankalp-library.onrender.com/api/students").catch(() => {});
+  }, []);
 
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
